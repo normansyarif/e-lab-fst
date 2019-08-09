@@ -1,0 +1,67 @@
+.login-box {
+  min-height: 500px;
+}
+
+.bg-unja {
+  background-color: #FFB300;
+  color: #fff;
+}
+
+.bg-darker {
+  background-color: #222d32;
+  color: #fff;
+}
+
+.text-smaller {
+  font-size: .8em;
+}
+
+.overwrite-bg {
+  background-color: #d9d9d9 !important;
+  background-image: none;
+}
+
+.btn-primary {
+  background-color: #FFB300;
+  border-color: #FFB300;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #c99416;
+  border-color: #c99416;
+}
+
+.bg-login-image {
+  background: url("../images/login-art.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.sidebar-brand-icon img {
+  width: 70%;
+}
+
+.add-btn-table {
+  margin-left: 20px;
+}
+
+.btn-text-info {
+  font-size: .7em;
+  font-style: italic;
+  margin-bottom: 0px;
+  margin-top: 5px;
+}
+
+.add-dist-item {
+  background-color: #e8e8e8;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #9a9a9a;
+  margin-bottom: 20px;
+}
+
+.invalid-feedback {
+  text-align: center;
+  margin-top: 5px;
+}
