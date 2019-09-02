@@ -159,4 +159,16 @@ class ItemController extends Controller
         return view('item.lab-kelola-bahan-keluar');
     }
 
+    // Ajax methods
+    public function cekStokAlat($id) {
+        $alat = Alat::find($id);
+        $stok = StokAlat::where('id_alat', $id);
+        return view('ajax.detail-stok-alat')->with('alat', $alat)->with('stoks', $stok->get())->with('grandStock', $stok->sum('stok'));
+    }
+
+    public function cekStokBahan($id) {
+        $bahan = Bahan::find($id);
+        $stok = StokBahan::where('id_bahan', $id);
+        return view('ajax.detail-stok-bahan')->with('bahan', $bahan)->with('stoks', $stok->get())->with('grandStock', $stok->sum('stok'));
+    }
 }

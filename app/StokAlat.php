@@ -12,4 +12,8 @@ class StokAlat extends Model
     	return $this->belongsTo('App\Alat', 'id_alat');
     }
 
+    public function user() {
+    	return $this->belongsTo('App\User', 'id_pemilik');
+    }
+
 }

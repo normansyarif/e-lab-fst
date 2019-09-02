@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Alat;
+use App\Bahan;
 
 class HomeController extends Controller
 {
@@ -22,7 +24,9 @@ class HomeController extends Controller
 
     public function gudangDashboard()
     {
-        return view('home.gudang-dashboard');
+        $alat = Alat::all();
+        $bahan = Bahan::all();
+        return view('home.gudang-dashboard')->with('alats', $alat)->with('bahans', $bahan);
     }
 
     public function laborDashboard()

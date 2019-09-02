@@ -50,3 +50,7 @@ Route::post('/post/bahan/post', 'ItemController@postBahan')->name('bahan.post');
 Route::post('/post/bahan/add', 'ItemController@addBahanStock')->name('bahan.add');
 Route::post('/post/bahan/edit', 'ItemController@editBahan')->name('bahan.edit');
 Route::post('/post/bahan/{id}/delete', 'ItemController@deleteBahan')->name('bahan.delete');
+
+// Ajax routes
+Route::get('/ajax/cek-stok/alat/{id}', 'ItemController@cekStokAlat')->name('cek.stok.alat');
+Route::get('/ajax/cek-stok/bahan/{id}', 'ItemController@cekStokBahan')->name('cek.stok.bahan');
