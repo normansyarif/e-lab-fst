@@ -14,7 +14,7 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addAlat">Tambah alat</button>
+        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addAlat"><span class="fa fa-plus"></span></button>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>

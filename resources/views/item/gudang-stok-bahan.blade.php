@@ -14,88 +14,49 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addModal">Tambah bahan</button>
+        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addModal"><span class="fa fa-plus"></span></button>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Nama Bahan</th>
               <th>Jenis</th>
-              <th>Gudang</th>
               <th>Jumlah</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
+            @if($bahs)
+            @foreach($bahs as $bah)
             <tr>
-              <td>Tiger Nixon</td>
-              <td>Cair</td>
-              <td>Gudang 1</td>
-              <td>55 ml</td>
+              <td>{{ $bah->nama }}</td>
+              <td>{{ $bah->jenis->nama }}</td>
+              
+              @if(count($bah->stoks) > 0)
+              <td>{{ $bah->stoks[0]->stok }} {{ $bah->unit }}</td>
+              @else
+              <td>0</td>
+              @endif
+              
               <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                <a onclick="
+                $('.add-stock-hidden-id').val('{{ $bah->id }}');
+                $('.add-stock-stok').val('0');
+                " href="javascript:void(0)" class="btn btn-info btn-sm addStock-btn" data-toggle="modal" data-target="#addStock">Tambah Stok</a>
+                <a onclick="
+                $('.edit-bahan-hidden-id').val('{{ $bah->id }}');
+                $('.edit-bahan-name').val('{{ $bah->nama }}');
+                $('.edit-bahan-unit').val('{{ $bah->unit }}');
+                $('#id_jenis_edit').val('{{ $bah->id_jenis }}');
+                " href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#editBahan">Edit</a>
+                <a onclick="if(confirm('Hapus?')) $(this).find('form').submit();" href="javascript:void(0)" class="btn btn-danger btn-sm">Hapus
+                  <form action="{{ route('bahan.delete', $bah->id) }}" method="post" style="display: none">
+                    @csrf
+                  </form>
+                </a>
               </td>
             </tr>
-            <tr>
-              <td>Garrett Winters</td>
-              <td>Cair</td>
-              <td>Gudang 1</td>
-              <td>33 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Ashton Cox</td>
-              <td>Cair</td>
-              <td>Gudang 2</td>
-              <td>23 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Cedric Kelly</td>
-              <td>Padat</td>
-              <td>Gudang 2</td>
-              <td>33 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Airi Satou</td>
-              <td>Padat</td>
-              <td>Gudang 2</td>
-              <td>11 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Brielle Williamson</td>
-              <td>Padat</td>
-              <td>Gudang 1</td>
-              <td>44 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Herrod Chandler</td>
-              <td>Cair</td>
-              <td>Gudang 2</td>
-              <td>33 ml</td>
-              <td>
-                <a href="#" class="btn btn-success btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
+            @endforeach
+            @endif
           </tbody>
         </table>
       </div>
@@ -111,7 +72,7 @@
 <div class="modal fade" id="addModal">
   <div class="modal-dialog">
     <div class="modal-content">
-      
+
       <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Tambah Bahan</h4>
@@ -119,32 +80,107 @@
       </div>
       
       <!-- Modal body -->
-      <div class="modal-body">
-        <form>
-          <input type="text" name="" class="form-control mb-3" placeholder="Nama bahan">
+      <form action="{{ route('bahan.post') }}" method="post">
+        <div class="modal-body">
+          @csrf
+          <input type="text" name="nama" class="form-control mb-3" placeholder="Nama bahan">
 
-          <input type="text" name="" class="form-control mb-3" placeholder="Satuan (misal. ml)">
+          <input type="text" name="unit" class="form-control mb-3" placeholder="Satuan (misal. ml)">
 
-          <select class="form-control mb-3">
-            <option>-- Pilih jenis --</option>
-            <option>Padat</option>
-            <option>Cair</option>
-            <option>Gas</option>
+          <select class="form-control mb-3" name="id_jenis" required>
+            <option value="" disabled selected>-- Pilih jenis --</option>
+            @if($jens)
+            @foreach($jens as $jen)
+            <option value="{{ $jen->id }}">{{ $jen->nama }}</option>
+            @endforeach
+            @endif
           </select>
 
-          <select class="form-control mb-3">
+          {{-- <select class="form-control mb-3">
             <option>-- Pilih lokasi penyimpanan --</option>
             <option>Gudang 1</option>
             <option>Gudang 2</option>
+          </select> --}}
+
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addStock">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Tambah Stok</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <form action="{{ route('bahan.add') }}" method="post">
+        @csrf
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <input type="hidden" name="bahan_id" class="add-stock-hidden-id" required>
+          <input type="number" name="stok" class="form-control mb-3 add-stock-stok" placeholder="Jumlah stok" required>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >Simpan</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="editBahan">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Bahan</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <form action="{{ route('bahan.edit') }}" method="post">
+        @csrf
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <input type="hidden" name="bahan_id" class="edit-bahan-hidden-id" required>
+          <input type="text" name="nama" class="form-control mb-3 edit-bahan-name" placeholder="Nama bahan" required>
+          <input type="text" name="unit" class="form-control mb-3 edit-bahan-unit" placeholder="Unit" required>
+          <select id="id_jenis_edit" class="form-control mb-3" name="id_jenis" required>
+            <option value="" disabled selected>-- Pilih Jenis --</option>
+            @if($jens)
+            @foreach($jens as $jen)
+            <option value="{{ $jen->id }}">{{ $jen->nama }}</option>
+            @endforeach
+            @endif
           </select>
-        </form>
-      </div>
-      
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
-      </div>
-      
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >Simpan</button>
+        </div>
+
+      </form>
+
     </div>
   </div>
 </div>

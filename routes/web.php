@@ -46,3 +46,7 @@ Route::post('/post/alat/add', 'ItemController@addAlatStock')->name('alat.add');
 Route::post('/post/alat/edit', 'ItemController@editAlat')->name('alat.edit');
 Route::post('/post/alat/{id}/delete', 'ItemController@deleteAlat')->name('alat.delete');
 
+Route::post('/post/bahan/post', 'ItemController@postBahan')->name('bahan.post');
+Route::post('/post/bahan/add', 'ItemController@addBahanStock')->name('bahan.add');
+Route::post('/post/bahan/edit', 'ItemController@editBahan')->name('bahan.edit');
+Route::post('/post/bahan/{id}/delete', 'ItemController@deleteBahan')->name('bahan.delete');

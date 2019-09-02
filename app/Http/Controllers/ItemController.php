@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Kategori;
 use App\Alat;
+use App\Jenis;
 use App\StokAlat;
 use App\Bahan;
 use App\StokBahan;
@@ -67,7 +68,59 @@ class ItemController extends Controller
     }
 
     public function gudangBahan() {
-    	return view('item.gudang-stok-bahan');
+        $stoks = StokBahan::where('id_pemilik', 1)->get();
+        $bahs = Bahan::all();
+        $jens = Jenis::all();
+        $gds = Gudang::all();
+    	return view('item.gudang-stok-bahan')->with('jens', $jens)->with('stoks', $stoks)->with('gudangs', $gds)->with('bahs', $bahs);
+    }
+
+    public function postBahan(Request $req) {
+        $bahan = new Bahan;
+        $bahan->nama = $req->input('nama');
+        $bahan->id_jenis = $req->input('id_jenis');
+        $bahan->unit = $req->input('unit');
+        $bahan->save();
+        return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah bahan');
+    }
+
+    public function addBahanStock(Request $req) {
+        $bahan_id = $req->input('bahan_id');
+
+        // Cek apakah alat ada di stok
+        $stok = StokBahan::where('id_pemilik', auth()->user()->id)->where('id_bahan', $bahan_id)->get()->toArray();
+        if(count($stok) > 0) {
+            $id_lama = $stok[0]['id'];
+            $lama = StokBahan::find($id_lama);
+            $lama->stok += $req->input('stok');
+            $lama->save();
+            return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah stok');
+        }else{
+            $baru = new StokBahan;
+            $baru->id_pemilik = auth()->user()->id;
+            $baru->id_bahan = $bahan_id;
+            $baru->stok = $req->input('stok');
+            $baru->save();
+            return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah stok');
+        }
+    }
+
+    public function editBahan(Request $req) {
+        $bahan = Bahan::find($req->input('bahan_id'));
+        $bahan->nama = $req->input('nama');
+        $bahan->id_jenis = $req->input('id_jenis');
+        $bahan->unit = $req->input('unit');
+        $bahan->save();
+        return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil mengubah bahan');
+    }
+
+    public function deleteBahan($id) {
+        $bahan = Bahan::find($id);
+        $bahan->delete();
+
+        $stok = StokBahan::where('id_bahan', $id);
+        $stok->delete();
+        return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menghapus bahan');
     }
 
     public function gudangAlatMasuk() {
