@@ -14,7 +14,7 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <a href="{{ route('gudang.kelola.buat-distribusi') }}" class="btn btn-primary float-right add-btn-table">Buat</a>
+        <a href="{{ route('gudang.kelola.buat-distribusi') }}" class="btn btn-primary float-right add-btn-table"><span class="fa fa-plus"></span></a>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -31,30 +31,24 @@
             <tr>
               <td>{{ date('d-m-Y', strtotime($distribusi->created_at)) }}</td>
               <td>{{ $distribusi->tujuan->name }}</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">{{ $distribusi->total_jumlah }}</a></td>
+              <td><a onclick="cekDistribusi('{{ $distribusi->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $distribusi->total_jumlah }}</a></td>
               
               @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
-              @elseif($distribusi->status == 2)
-              <td>Selesai</td>
-              @endif
-
               <td>
                 <a href="#" class="btn btn-primary btn-sm">Cetak surat</a>
                 <p class="btn-text-info">(Diserahkan ke {{ $distribusi->tujuan->name }})</p>
               </td>
-            </tr>
-            @endforeach
-            @endif
-            {{-- <tr>
-              <td>7 Agt 2007 08:00</td>
-              <td>Lab 1</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">3 alat, 1 bahan</a></td>
+              @elseif($distribusi->status == 2)
               <td>Selesai</td>
               <td>
                 <a href="#" class="btn btn-success btn-sm">Download surat terima</a>
               </td>
-            </tr> --}}
+              @endif
+
+            </tr>
+            @endforeach
+            @endif
           </tbody>
         </table>
       </div>
@@ -76,21 +70,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <div>
-          <label>Alat</label>
-          <ol>
-            <li>Alat 1, 33 buah</li>
-            <li>Alat 2, 20 buah</li>
-          </ol>
-        </div>
-
-        <div>
-          <label>Bahan</label>
-          <ol>
-            <li>Bahan 1, 5ml</li>
-            <li>Bahan 2, 10ml</li>
-          </ol>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
@@ -99,4 +78,23 @@
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+  function cekDistribusi(id_distribusi) {
+    jQuery.ajax({
+      url: "/ajax/detail-distribusi/" + id_distribusi,
+      method: 'get',
+      success: function(result){
+        $('.modal-body').html(result);
+      }});
+  }
+</script>
 @endsection
