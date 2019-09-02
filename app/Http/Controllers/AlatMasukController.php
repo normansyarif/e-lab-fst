@@ -33,7 +33,7 @@ class AlatMasukController extends Controller
         }else{
             $baru = new StokAlat;
             $baru->id_pemilik = auth()->user()->id;
-            $baru->id_alat = $alat_id;
+            $baru->id_alat = $req->input('id_alat');
             $baru->stok = $req->input('jumlah');
             $baru->save();
         }

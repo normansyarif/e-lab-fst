@@ -19,24 +19,34 @@
           <thead>
             <tr>
               <th>Tanggal</th>
-              <th>Lokasi</th>
+              <th>Tujuan</th>
               <th>Jumlah Item</th>
               <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
+            @if($distribusis)
+            @foreach($distribusis as $distribusi)
             <tr>
-              <td>7 Agt 2007 08:00</td>
-              <td>Lab 1</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">3 alat, 1 bahan</a></td>
+              <td>{{ date('d-m-Y', strtotime($distribusi->created_at)) }}</td>
+              <td>{{ $distribusi->tujuan->name }}</td>
+              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">{{ $distribusi->total_jumlah }}</a></td>
+              
+              @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
+              @elseif($distribusi->status == 2)
+              <td>Selesai</td>
+              @endif
+
               <td>
                 <a href="#" class="btn btn-primary btn-sm">Cetak surat</a>
-                <p class="btn-text-info">(Diserahkan ke lab 1)</p>
+                <p class="btn-text-info">(Diserahkan ke {{ $distribusi->tujuan->name }})</p>
               </td>
             </tr>
-            <tr>
+            @endforeach
+            @endif
+            {{-- <tr>
               <td>7 Agt 2007 08:00</td>
               <td>Lab 1</td>
               <td><a data-toggle="modal" data-target="#itemCountModal" href="#">3 alat, 1 bahan</a></td>
@@ -44,7 +54,7 @@
               <td>
                 <a href="#" class="btn btn-success btn-sm">Download surat terima</a>
               </td>
-            </tr>
+            </tr> --}}
           </tbody>
         </table>
       </div>
