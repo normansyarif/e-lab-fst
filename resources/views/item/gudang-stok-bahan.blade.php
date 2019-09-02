@@ -34,13 +34,14 @@
               @if(count($bah->stoks) > 0)
               <td>{{ $bah->stoks[0]->stok }} {{ $bah->unit }}</td>
               @else
-              <td>0</td>
+              <td>0 {{ $bah->unit }}</td>
               @endif
               
               <td>
                 <a onclick="
                 $('.add-stock-hidden-id').val('{{ $bah->id }}');
                 $('.add-stock-stok').val('0');
+                $('.dalam-unit').html('{{ $bah->unit }}')
                 " href="javascript:void(0)" class="btn btn-info btn-sm addStock-btn" data-toggle="modal" data-target="#addStock">Tambah Stok</a>
                 <a onclick="
                 $('.edit-bahan-hidden-id').val('{{ $bah->id }}');
@@ -121,7 +122,7 @@
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Tambah Stok</h4>
+        <h4 class="modal-title">Tambah Stok (dalam <span class="dalam-unit"></span>)</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 

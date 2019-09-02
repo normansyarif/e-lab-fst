@@ -14,7 +14,7 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addModal">Buat</button>
+        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addModal"><span class="fa fa-plus"></span></button>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -24,41 +24,17 @@
             </tr>
           </thead>
           <tbody>
+            
+            @if($ams)
+            @foreach($ams as $am)
             <tr>
-              <td>Tiger Nixon</td>
-              <td>33</td>
-              <td>7 Agt 2007 08:00</td>
+              <td>{{ $am->alat->nama }}</td>
+              <td>{{ $am->jumlah }}</td>
+              <td>{{ date('d-m-Y', strtotime($am->tanggal_masuk)) }}</td>
             </tr>
-            <tr>
-              <td>Garrett Winters</td>
-              <td>33</td>
-              <td>7 Agt 2007 08:00</td>
-            </tr>
-            <tr>
-              <td>Ashton Cox</td>
-              <td>53</td>
-              <td>7 Agt 2007 08:00</td>
-            </tr>
-            <tr>
-              <td>Cedric Kelly</td>
-              <td>43</td>
-              <td>7 Agt 2007 08:00</td>
-            </tr>
-            <tr>
-              <td>Airi Satou</td>
-              <td>55</td>
-              <td>7 Agt 2007: 08:00</td>
-            </tr>
-            <tr>
-              <td>Brielle Williamson</td>
-              <td>55</td>
-              <td>7 Agt 2007 08:00</td>
-            </tr>
-            <tr>
-              <td>Herrod Chandler</td>
-              <td>55</td>
-              <td>7 Agt 2007: 08:00</td>
-            </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>
@@ -82,27 +58,38 @@
       </div>
 
       <!-- Modal body -->
-      <div class="modal-body">
-        <form>
+      <form method="post" action="{{ route('alat.masuk.post') }}">
+        @csrf
+        <div class="modal-body">
 
-          <select class="form-control mb-3">
-            <option>-- Pilih item --</option>
-            <option>Gelas</option>
-            <option>Pipet tetes</option>
-            <option>Apalah gitu</option>
+          <select class="cari-alat form-control" required name="id_alat">
+            <option value="" disabled>-- Pilih alat --</option>
+            @if($alats)
+            @foreach($alats as $alat)
+            <option value="{{ $alat->id }}">{{ $alat->nama }}</option>
+            @endforeach
+            @endif
           </select>
 
-          <input type="number" name="" placeholder="Jumlah" class="form-control">
-        </form>
-      </div>
+          <input type="number" name="jumlah" placeholder="Jumlah" class="form-control mb-3" required>
+          <input type="date" name="tanggal" placeholder="Tanggal" class="form-control" required>
+        </div>
 
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
-      </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+
+      </form>
 
     </div>
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $('.cari-alat').select2();
+</script>
 @endsection

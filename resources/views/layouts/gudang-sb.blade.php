@@ -16,6 +16,9 @@
 	<link href="{{ asset('vendors/sb-admin-2/css/sb-admin-2.min.css') }}" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
 	<link href="{{ asset('vendors/sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+
+	{{-- Select2 --}}
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 </head>
 
 <body id="page-top">
@@ -162,7 +165,7 @@
 
 				<!-- Begin Page Content -->
 				<div class="container-fluid">
-				@include('includes.message')
+					@include('includes.message')
 				</div>
 				
 				@yield('content')
@@ -203,6 +206,9 @@
 
 	<!-- Page level custom scripts -->
 	<script src="{{ asset('vendors/sb-admin-2/js/demo/datatables-demo.js') }}"></script>
+
+	<!-- Select2 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
 
 	@yield('scripts')
 

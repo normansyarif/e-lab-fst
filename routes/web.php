@@ -18,7 +18,6 @@ Route::get('/gudang', 'HomeController@gudangDashboard')->name('gudang.dashboard'
 
 Route::get('/gudang/stok/alat', 'ItemController@gudangAlat')->name('gudang.stok.alat');
 Route::get('/gudang/stok/bahan', 'ItemController@gudangBahan')->name('gudang.stok.bahan');
-Route::get('/gudang/kelola/alat-masuk', 'ItemController@gudangAlatMasuk')->name('gudang.kelola.alat-masuk');
 Route::get('/gudang/kelola/bahan-masuk', 'ItemController@gudangBahanMasuk')->name('gudang.kelola.bahan-masuk');
 Route::get('/gudang/kelola/distribusi', 'ItemController@gudangDistribusi')->name('gudang.kelola.distribusi');
 Route::get('/gudang/kelola/distribusi/buat', 'ItemController@gudangBuatDistribusi')->name('gudang.kelola.buat-distribusi');
@@ -50,6 +49,9 @@ Route::post('/post/bahan/post', 'ItemController@postBahan')->name('bahan.post');
 Route::post('/post/bahan/add', 'ItemController@addBahanStock')->name('bahan.add');
 Route::post('/post/bahan/edit', 'ItemController@editBahan')->name('bahan.edit');
 Route::post('/post/bahan/{id}/delete', 'ItemController@deleteBahan')->name('bahan.delete');
+
+Route::get('/gudang/kelola/alat-masuk', 'AlatMasukController@gudangAlatMasuk')->name('gudang.kelola.alat-masuk');
+Route::post('gudang/alat-masuk/post', 'AlatMasukController@post')->name('alat.masuk.post');
 
 // Ajax routes
 Route::get('/ajax/cek-stok/alat/{id}', 'ItemController@cekStokAlat')->name('cek.stok.alat');

@@ -123,10 +123,6 @@ class ItemController extends Controller
         return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menghapus bahan');
     }
 
-    public function gudangAlatMasuk() {
-    	return view('item.gudang-kelola-alat-masuk');
-    }
-
     public function gudangBahanMasuk() {
     	return view('item.gudang-kelola-bahan-masuk');
     }
