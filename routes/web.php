@@ -37,3 +37,12 @@ Route::get('/lab/kelola/bahan-keluar', 'ItemController@laborBahanKeluar')->name(
 
 Route::get('/lab/pengusulan', 'AjuUsulController@laborPengusulan')->name('labor.pengusulan');
 Route::get('/lab/pengajuan', 'AjuUsulController@laborPengajuan')->name('labor.pengajuan');
+
+Route::post('/post/labor/create', 'LokasiController@laborPost')->name('labor.post');
+Route::post('/post/gudang/create', 'LokasiController@gudangPost')->name('gudang.post');
+
+Route::post('/post/alat/post', 'ItemController@postAlat')->name('alat.post');
+Route::post('/post/alat/add', 'ItemController@addAlatStock')->name('alat.add');
+Route::post('/post/alat/edit', 'ItemController@editAlat')->name('alat.edit');
+Route::post('/post/alat/{id}/delete', 'ItemController@deleteAlat')->name('alat.delete');
+

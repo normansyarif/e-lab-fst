@@ -161,6 +161,10 @@
 				<!-- End of Topbar -->
 
 				<!-- Begin Page Content -->
+				<div class="container-fluid">
+				@include('includes.message')
+				</div>
+				
 				@yield('content')
 
 			</div>

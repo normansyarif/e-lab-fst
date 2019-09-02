@@ -24,22 +24,20 @@
             </tr>
           </thead>
           <tbody>
+            
+            @if($labors)
+            @foreach($labors as $labor)
             <tr>
-              <td>Lab 1</td>
-              <td>FST Lantai 2</td>
+              <td>{{ $labor->nama }}</td>
+              <td>{{ $labor->lokasi }}</td>
               <td>
                 <a href="#" class="btn btn-info btn-sm">Edit</a>
                 <a href="#" class="btn btn-danger btn-sm">Hapus</a>
               </td>
             </tr>
-            <tr>
-              <td>Lab 2</td>
-              <td>FST Lantai 3</td>
-              <td>
-                <a href="#" class="btn btn-info btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-              </td>
-            </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>
@@ -62,18 +60,21 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-      <!-- Modal body -->
-      <div class="modal-body">
-        <form>
-          <input type="text" name="" class="form-control mb-3" placeholder="Nama laboratorium">
-          <input type="text" name="" class="form-control mb-3" placeholder="Lokasi">
-        </form>
-      </div>
+      <form action="{{ route('labor.post') }}" method="post">
+        @csrf
 
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
-      </div>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <input type="text" name="nama" class="form-control mb-3" placeholder="Nama laboratorium" required>
+          <input type="text" name="lokasi" class="form-control mb-3" placeholder="Lokasi" required>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+
+      </form>
 
     </div>
   </div>
