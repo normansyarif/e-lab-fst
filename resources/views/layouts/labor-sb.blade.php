@@ -39,7 +39,7 @@
 
 			<!-- Nav Item - Dashboard -->
 			<li class="nav-item {{ Request::is('labor') ? 'active' : '' }}">
-				<a class="nav-link" href="index.html">
+				<a class="nav-link" href="{{ route('labor.dashboard') }}">
 					<i class="fas fa-fw fa-tachometer-alt"></i>
 					<span>Dashboard</span>
 				</a>

@@ -18,44 +18,40 @@
           <thead>
             <tr>
               <th>Tanggal</th>
-              <th>Lokasi</th>
-              <th>Jumlah Item</th>
+              <th>Asal</th>
+              <th>Jumlah</th>
               <th>Jenis</th>
               <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
+
+            {{-- Distribusi dari gudang --}}
+            @if($distribusis)
+            @foreach($distribusis as $distribusi)
             <tr>
-              <td>7 Agt 2007 08:00</td>
+              <td>{{ date('d-m-Y', strtotime($distribusi->created_at)) }}</td>
               <td>Gudang</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">3 alat, 1 bahan</a></td>
+              <td><a onclick="cekDistribusi('{{ $distribusi->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $distribusi->total_jumlah }}</a></td>
               <td>Distribusi</td>
+
+              @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
               <td>
-                <a href="#" class="btn btn-primary btn-sm">Upload surat</a>
+                <a href="{{ route('form.upload.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Upload surat</a>
               </td>
-            </tr>
-            <tr>
-              <td>7 Agt 2007 08:00</td>
-              <td>Gudang</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">3 alat, 1 bahan</a></td>
-              <td>Distribusi</td>
+              @elseif($distribusi->status == 2)
               <td>Selesai</td>
               <td>
-                <a href="#" class="btn btn-success btn-sm">Tanda terima</a>
+                <a href="{{ url('uploads/distribusi/' . $distribusi->surat) }}" class="btn btn-success btn-sm">Lihat surat</a>
               </td>
+              @endif
+
             </tr>
-            <tr>
-              <td>7 Agt 2007 08:00</td>
-              <td>Lab 1</td>
-              <td><a data-toggle="modal" data-target="#itemCountModal" href="#">1 bahan</a></td>
-              <td>Peminjaman</td>
-              <td>Belum dikembalikan</td>
-              <td>
-                <a href="#" class="btn btn-info btn-sm">Surat pengembalian</a>
-              </td>
-            </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>
@@ -67,7 +63,6 @@
 
 @section('modals')
 
-<!-- Count Modal-->
 <div class="modal fade" id="itemCountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -78,21 +73,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <div>
-          <label>Alat</label>
-          <ol>
-            <li>Alat 1, 33 buah</li>
-            <li>Alat 2, 20 buah</li>
-          </ol>
-        </div>
-
-        <div>
-          <label>Bahan</label>
-          <ol>
-            <li>Bahan 1, 5ml</li>
-            <li>Bahan 2, 10ml</li>
-          </ol>
-        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
@@ -101,4 +81,23 @@
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+  function cekDistribusi(id_distribusi) {
+    jQuery.ajax({
+      url: "/ajax/detail-distribusi/" + id_distribusi,
+      method: 'get',
+      success: function(result){
+        $('.modal-body').html(result);
+      }});
+  }
+</script>
 @endsection

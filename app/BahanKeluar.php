@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StokBahan extends Model
+class BahanKeluar extends Model
 {
-    protected $table = 'stok_bahan';
+    protected $table = 'bahan_keluar';
 
     public function bahan() {
     	return $this->belongsTo('App\Bahan', 'id_bahan');
     }
 
-    public function user() {
-    	return $this->belongsTo('App\User', 'id_pemilik');
+    public function tujuan() {
+    	return $this->belongsTo('App\User', 'id_tujuan');
     }
 }

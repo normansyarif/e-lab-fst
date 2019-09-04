@@ -31,6 +31,8 @@ class HomeController extends Controller
 
     public function laborDashboard()
     {
-        return view('home.labor-dashboard');
+        $alat = Alat::all();
+        $bahan = Bahan::all();
+        return view('home.labor-dashboard')->with('alats', $alat)->with('bahans', $bahan);
     }
 }

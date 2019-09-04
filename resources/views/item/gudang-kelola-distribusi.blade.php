@@ -36,13 +36,13 @@
               @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
               <td>
-                <a href="#" class="btn btn-primary btn-sm">Cetak surat</a>
+                <a href="{{ route('print.surat.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Cetak surat</a>
                 <p class="btn-text-info">(Diserahkan ke {{ $distribusi->tujuan->name }})</p>
               </td>
               @elseif($distribusi->status == 2)
               <td>Selesai</td>
               <td>
-                <a href="#" class="btn btn-success btn-sm">Download surat terima</a>
+                <a href="{{ url('uploads/distribusi/' . $distribusi->surat) }}" class="btn btn-success btn-sm">Download surat terima</a>
               </td>
               @endif
 

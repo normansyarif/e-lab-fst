@@ -19,7 +19,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Usulan Sedang Diajukan</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -36,7 +36,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Usulan Disetujui</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -53,7 +53,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Usulan Ditolak</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">45</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -80,7 +80,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ajuan Permintaan & Peminjaman</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -97,7 +97,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ajuan yang Diterima</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -114,7 +114,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ajuan yang Ditolak</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">45</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -145,41 +145,27 @@
             </tr>
           </thead>
           <tbody>
+
+            @if($alats)
+            @foreach($alats as $alat)
             <tr>
-              <td>Tiger Nixon</td>
+              <td>{{ $alat->nama }}</td>
               <td>Alat</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
+              <td><a onclick="cekStokAlat({{ $alat->id }})" class="btn btn-info btn-sm" data-toggle="modal" data-target="#checkModal" href="javascript:void(0)">Cek stok</a></td>
             </tr>
+            @endforeach
+            @endif
+
+            @if($bahans)
+            @foreach($bahans as $bahan)
             <tr>
-              <td>Garrett Winters</td>
-              <td>Alat</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
-            </tr>
-            <tr>
-              <td>Ashton Cox</td>
-              <td>Alat</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
-            </tr>
-            <tr>
-              <td>Cedric Kelly</td>
-              <td>Padat</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
-            </tr>
-            <tr>
-              <td>Airi Satou</td>
+              <td>{{ $bahan->nama }}</td>
               <td>Bahan</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
+              <td><a onclick="cekStokBahan({{ $bahan->id }})" class="btn btn-info btn-sm" data-toggle="modal" data-target="#checkModal" href="javascript:void(0)">Cek stok</a></td>
             </tr>
-            <tr>
-              <td>Brielle Williamson</td>
-              <td>Bahan</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
-            </tr>
-            <tr>
-              <td>Herrod Chandler</td>
-              <td>Bahan</td>
-              <td><a data-toggle="modal" data-target="#checkModal" href="">55 ml</a></td>
-            </tr>
+            @endforeach
+            @endif
+            
           </tbody>
         </table>
       </div>
@@ -195,51 +181,37 @@
 <div class="modal fade" id="checkModal">
   <div class="modal-dialog">
     <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Stok Alkohol</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <label>Stok di gudang</label>
-        <table class="table table-responsive mb-3">
-          <tr>
-            <th>Gudang</th>
-            <th>Jumlah</th>
-          </tr>
-          <tr>
-            <td>Gudang 1</td>
-            <td>50 ml</td>
-          </tr>
-        </table>
-
-        <label>Stok di laboratorium</label>
-        <table class="table table-responsive mb-3">
-          <tr>
-            <th>Nama Lab</th>
-            <th>Jumlah</th>
-          </tr>
-          <tr>
-            <td>Lab 1</td>
-            <td>50 ml</td>
-          </tr>
-          <tr>
-            <td>Lab 5</td>
-            <td>150 ml</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
-      </div>
-
     </div>
   </div>
 </div>
 
 @endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+  function cekStokAlat(id_alat) {
+    jQuery.ajax({
+      url: "/ajax/cek-stok/alat/" + id_alat,
+      method: 'get',
+      success: function(result){
+        $('.modal-content').html(result);
+      }});
+  }
+
+  function cekStokBahan(id_bahan) {
+    jQuery.ajax({
+      url: "/ajax/cek-stok/bahan/" + id_bahan,
+      method: 'get',
+      success: function(result){
+        $('.modal-content').html(result);
+      }});
+  }
+</script>
+@endsection
+

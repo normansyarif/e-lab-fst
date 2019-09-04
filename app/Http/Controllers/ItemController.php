@@ -124,23 +124,13 @@ class ItemController extends Controller
     }
 
     public function laborAlat() {
-        return view('item.lab-stok-alat');
+        $stoks = StokAlat::where('id_pemilik', auth()->user()->id)->get();
+        return view('item.lab-stok-alat')->with('stoks', $stoks);
     }
 
     public function laborBahan() {
-        return view('item.lab-stok-bahan');
-    }
-
-    public function laborItemMasuk() {
-        return view('item.lab-kelola-item-masuk');
-    }
-
-    public function laborAlatKeluar() {
-        return view('item.lab-kelola-alat-keluar');
-    }
-
-    public function laborBahanKeluar() {
-        return view('item.lab-kelola-bahan-keluar');
+        $stoks = StokBahan::where('id_pemilik', auth()->user()->id)->get();
+        return view('item.lab-stok-bahan')->with('stoks', $stoks);
     }
 
     // Ajax methods

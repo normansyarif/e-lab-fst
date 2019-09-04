@@ -23,26 +23,17 @@
             </tr>
           </thead>
           <tbody>
+            
+            @if($stoks)
+            @foreach($stoks as $stok)
             <tr>
-              <td>Tiger Nixon</td>
-              <td>Cair</td>
-              <td>55 ml</td>
+              <td>{{ $stok->bahan->nama }}</td>
+              <td>{{ $stok->bahan->jenis->nama }}</td>
+              <td>{{ $stok->stok }} {{ $stok->bahan->unit }}</td>
             </tr>
-            <tr>
-              <td>Tiger Nixon</td>
-              <td>Cair</td>
-              <td>55 ml</td>
-            </tr>
-            <tr>
-              <td>Tiger Nixon</td>
-              <td>Cair</td>
-              <td>55 ml</td>
-            </tr>
-            <tr>
-              <td>Tiger Nixon</td>
-              <td>Cair</td>
-              <td>55 ml</td>
-            </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>

@@ -93,3 +93,14 @@
 .hide {
   display: none;
 }
+
+.tolak-btn {
+  font-size: .8em;
+  color: #f00;
+  text-decoration: underline;
+}
+
+.tolak-btn:hover {
+  color: #f00;
+  text-decoration: none;
+}

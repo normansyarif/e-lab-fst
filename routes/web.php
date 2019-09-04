@@ -19,17 +19,13 @@ Route::get('/gudang', 'HomeController@gudangDashboard')->name('gudang.dashboard'
 Route::get('/gudang/stok/alat', 'ItemController@gudangAlat')->name('gudang.stok.alat');
 Route::get('/gudang/stok/bahan', 'ItemController@gudangBahan')->name('gudang.stok.bahan');
 
-Route::get('/gudang/pengajuan', 'AjuUsulController@gudangPengajuan')->name('gudang.pengajuan');
-
 Route::get('/gudang/lokasi/gudang', 'LokasiController@gudang')->name('gudang.gudang');
 Route::get('/gudang/lokasi/labor', 'LokasiController@labor')->name('gudang.labor');
 
 Route::get('/labor', 'HomeController@laborDashboard')->name('labor.dashboard');
 Route::get('/lab/stok/alat', 'ItemController@laborAlat')->name('labor.stok.alat');
 Route::get('/lab/stok/bahan', 'ItemController@laborBahan')->name('labor.stok.bahan');
-Route::get('/lab/kelola/item-masuk', 'ItemController@laborItemMasuk')->name('labor.kelola.item-masuk');
-Route::get('/lab/kelola/alat-keluar', 'ItemController@laborAlatKeluar')->name('labor.kelola.alat-keluar');
-Route::get('/lab/kelola/bahan-keluar', 'ItemController@laborBahanKeluar')->name('labor.kelola.bahan-keluar');
+Route::get('/lab/kelola/item-masuk', 'DistribusiController@laborItemMasuk')->name('labor.kelola.item-masuk');
 
 // Pengajuan & pengusulan
 Route::get('/lab/pengusulan', 'AjuUsulController@laborPengusulan')->name('labor.pengusulan');
@@ -59,12 +55,29 @@ Route::post('gudang/alat-masuk/post', 'AlatMasukController@post')->name('alat.ma
 Route::get('/gudang/kelola/bahan-masuk', 'BahanMasukController@gudangBahanMasuk')->name('gudang.kelola.bahan-masuk');
 Route::post('gudang/bahan-masuk/post', 'BahanMasukController@post')->name('bahan.masuk.post');
 
+// Alat keluar
+Route::get('/lab/kelola/alat-keluar', 'AlatKeluarController@laborAlatKeluar')->name('labor.kelola.alat-keluar');
+
+// Bahan keluar
+Route::get('/lab/kelola/bahan-keluar', 'BahanKeluarController@laborBahanKeluar')->name('labor.kelola.bahan-keluar');
+
 // Distribusi
 Route::get('/gudang/kelola/distribusi', 'DistribusiController@gudangDistribusi')->name('gudang.kelola.distribusi');
 Route::get('/gudang/kelola/distribusi/buat', 'DistribusiController@gudangBuatDistribusi')->name('gudang.kelola.buat-distribusi');
 Route::post('/gudang/kelola/distribusi/post', 'DistribusiController@post')->name('distribusi.post');
+Route::get('/gudang/kelola/distribusi/print/{id}', 'DistribusiController@printSurat')->name('print.surat.distribusi');
+Route::get('/distribusi/{id}', 'DistribusiController@formUpload')->name('form.upload.distribusi');
+Route::post('/distribusi/{id}/post', 'DistribusiController@postUpload')->name('post.upload.distribusi');
+
+// Pengajuan
+Route::get('/gudang/pengajuan', 'PengajuanController@gudangPengajuan')->name('gudang.pengajuan');
+Route::get('/gudang/kelola/pengajuan/buat', 'PengajuanController@gudangBuatPengajuan')->name('gudang.kelola.buat-pengajuan');
+Route::post('/gudang/kelola/pengajuan/post', 'PengajuanController@postKeDekanat')->name('pengajuan.dekanat.post');
+Route::get('/gudang/kelola/pengajuan/print/{id}', 'PengajuanController@printSurat')->name('print.surat.pengajuan');
+Route::get('/gudang/kelola/pengajuan/cek-stok/{id}', 'PengajuanController@cekStok')->name('cekstok.pengajuan');
 
 // Ajax routes
 Route::get('/ajax/cek-stok/alat/{id}', 'ItemController@cekStokAlat')->name('cek.stok.alat');
 Route::get('/ajax/cek-stok/bahan/{id}', 'ItemController@cekStokBahan')->name('cek.stok.bahan');
 Route::get('/ajax/detail-distribusi/{id_distribusi}', 'DistribusiController@cekDetail')->name('distribusi.detail');
+Route::get('/ajax/detail-pengajuan/{id_pengajuan}', 'PengajuanController@cekDetail')->name('pengajuan.detail');

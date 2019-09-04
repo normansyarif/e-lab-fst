@@ -17,43 +17,25 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Tujuan</th>
               <th>Nama Alat</th>
               <th>Jumlah</th>
               <th>Tgl. Keluar</th>
-              <th>Tujuan</th>
             </tr>
           </thead>
           <tbody>
+            
+            @if($keluars)
+            @foreach($keluars as $keluar)
             <tr>
-              <td>Tiger Nixon</td>
-              <td>33</td>
-              <td>7 Agt 2007</td>
-              <td>Lab. 3</td>
+              <td>{{ $keluar->tujuan->name }}</td>
+              <td>{{ $keluar->alat->nama }}</td>
+              <td>{{ $keluar->jumlah }}</td>
+              <td>{{ $keluar->tgl_keluar }}</td>
             </tr>
-            <tr>
-              <td>Garrett Winters</td>
-              <td>33</td>
-              <td>7 Agt 2007</td>
-              <td>Lab. 4</td>
-            </tr>
-            <tr>
-              <td>Ashton Cox</td>
-              <td>53</td>
-              <td>7 Agt 2007</td>
-              <td>Lab. 2</td>
-            </tr>
-            <tr>
-              <td>Cedric Kelly</td>
-              <td>43</td>
-              <td>7 Agt 2007</td>
-              <td>Lab. 5</td>
-            </tr>
-            <tr>
-              <td>Herrod Chandler</td>
-              <td>55</td>
-              <td>7 Agt 2007</td>
-              <td>Lab. 1</td>
-            </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>
