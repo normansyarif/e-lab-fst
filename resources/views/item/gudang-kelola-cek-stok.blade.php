@@ -14,8 +14,12 @@
     </div>
     <div class="card-body">
 
-      <form method="post" action="{{ route('pengajuan.dekanat.post') }}" onsubmit="return validate(this);">
+      <form method="post" action="{{ route('gudang.pengajuan.process') }}" onsubmit="return validate(this);">
         @csrf
+
+        <input type="hidden" name="pengajuan-id" id="pengajuan-id" value="{{ $pengajuan->id }}">
+        <input type="hidden" name="forwarded" id="forwarded">
+        <input type="hidden" name="rejected" id="rejected"> 
 
         <div class="row">
 
@@ -26,8 +30,14 @@
 
               @if($pAlats)
               @foreach($pAlats as $pAlat)
-              <div>
-                <label><strong>{{ $pAlat->alat->nama }}</strong>, dibutuhkan {{ $pAlat->jumlah }} buah. <a class="tolak-btn" href="#" data-toggle="modal" data-target="#pesanDitolak">Tolak</a></label>
+              <div class="item" id="alat-{{ $pAlat->id }}">
+                <label><strong>{{ $pAlat->alat->nama }}</strong>, dibutuhkan {{ $pAlat->jumlah }} buah. <a class="tolak-btn" href="javascript:void(0)" onclick="
+                $('#ref_nama').val('{{ $pAlat->alat->id }}');
+                $('#nama').val('{{ $pAlat->alat->nama }}');
+                $('#tolak-id').val('alat-{{ $pAlat->id }}');
+                $('#jumlah').val('{{ $pAlat->jumlah }}');
+                $('#tipe').val('Alat');
+                " data-toggle="modal" data-target="#pesanDitolak">Tolak</a></label>
                 <table class="table table-responsive">
                   <tr>
                     <th>Pemilik</th>
@@ -37,11 +47,15 @@
                   
                   @if($pAlat->alat->stoks)
                   @foreach($pAlat->alat->stoks as $stok)
+                  @if($stok->user->id != $pengajuan->id_pengaju)
+                  @if($pAlat->jumlah <= $stok->stok)
                   <tr>
                     <td>{{ $stok->user->name }}</td>
                     <td>{{ $stok->stok }}</td>
-                    <td><button type="button" class="btn btn-info btn-sm">Pilih</button></td>
+                    <td><button ref-nama="{{ $pAlat->alat->id }}" nama="{{ $pAlat->alat->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pAlat->jumlah }}" tipe="Alat" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
+                  @endif
+                  @endif
                   @endforeach
                   @endif
 
@@ -52,8 +66,14 @@
 
               @if($pBahans)
               @foreach($pBahans as $pBahan)
-              <div>
-                <label><strong>{{ $pBahan->bahan->nama }}</strong>, dibutuhkan {{ $pBahan->jumlah }} {{ $pBahan->bahan->unit }}. <a class="tolak-btn" href="#" data-toggle="modal" data-target="#pesanDitolak">Tolak</a></label>
+              <div class="item" id="bahan-{{ $pBahan->id }}">
+                <label><strong>{{ $pBahan->bahan->nama }}</strong>, dibutuhkan {{ $pBahan->jumlah }} {{ $pBahan->bahan->unit }}. <a class="tolak-btn" href="javascript:void(0)" onclick="
+                $('#ref_nama').val('{{ $pBahan->bahan->id }}');
+                $('#nama').val('{{ $pBahan->bahan->nama }}');
+                $('#tolak-id').val('bahan-{{ $pBahan->id }}');
+                $('#jumlah').val('{{ $pBahan->jumlah }}');
+                $('#tipe').val('Bahan');
+                " data-toggle="modal" data-target="#pesanDitolak">Tolak</a></label>
                 <table class="table table-responsive">
                   <tr>
                     <th>Pemilik</th>
@@ -63,11 +83,15 @@
                   
                   @if($pBahan->bahan->stoks)
                   @foreach($pBahan->bahan->stoks as $stok)
+                  @if($stok->user->id != $pengajuan->id_pengaju)
+                  @if($pBahan->jumlah <= $stok->stok)
                   <tr>
                     <td>{{ $stok->user->name }}</td>
                     <td>{{ $stok->stok }} {{ $pBahan->bahan->unit }}</td>
-                    <td><button type="button" class="btn btn-info btn-sm">Pilih</button></td>
+                    <td><button ref-nama="{{ $pBahan->bahan->id }}" nama="{{ $pBahan->bahan->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pBahan->jumlah }}" tipe="Bahan" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
+                  @endif
+                  @endif
                   @endforeach
                   @endif
 
@@ -87,21 +111,13 @@
 
             <div class="dist-alat-wrapper">
 
-              <table class="table table-responsive">
+              <table class="table table-responsive table-forward">
                 <tr>
                   <th>Nama Item</th>
                   <th>Pemilik</th>
+                  <th>Tipe</th>
                   <th>Jumlah</th>
-                </tr>
-                <tr>
-                  <td>Alkohol</td>
-                  <td>Lab 1</td>
-                  <td>33</td>
-                </tr>
-                <tr>
-                  <td>Alkohol</td>
-                  <td>Lab 1</td>
-                  <td>33</td>
+                  <th></th>
                 </tr>
               </table>
 
@@ -116,21 +132,13 @@
 
             <div class="dist-alat-wrapper">
 
-              <table class="table table-responsive">
+              <table class="table table-responsive table-tolak">
                 <tr>
-                  <th>Nama Item</th>
+                  <th>Item</th>
+                  <th>Tipe</th>
                   <th>Jumlah</th>
                   <th>Pesan</th>
-                </tr>
-                <tr>
-                  <td>Alkohol</td>
-                  <td>33</td>
-                  <td>Alasan ditolak</td>
-                </tr>
-                <tr>
-                  <td>Alkohol</td>
-                  <td>33</td>
-                  <td>Alasan ditolak</td>
+                  <th></th>
                 </tr>
               </table>
 
@@ -145,8 +153,6 @@
               <button type="submit" class="btn btn-success">Selesai</button>
             </div>
           </div>
-
-
         </div>
 
       </form>
@@ -167,10 +173,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <input type="text" name="" placeholder="Pesan" class="form-control">
+        <input type="text" id="pesan" placeholder="Pesan" class="form-control">
+        <input type="hidden" id="nama">
+        <input type="hidden" id="tolak-id">
+        <input type="hidden" id="ref_nama">
+        <input type="hidden" id="jumlah">
+        <input type="hidden" id="tipe">
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button">Tolak</button>
+        <button data-dismiss="modal" class="btn btn-secondary btn-tolak" type="button">Tolak</button>
       </div>
     </div>
   </div>
@@ -182,6 +193,7 @@
 
 @section('scripts')
 <script type="text/javascript">
+
   $('select').select2();
 
   $('.add-alat-btn').click(function() {
@@ -204,15 +216,59 @@
     }
   });
 
+  $('.select-btn').click(function() {
+    var id = $(this).parent().parent().parent().parent().parent().attr('id');
+    var nama = $(this).attr('nama');
+    var ref_nama = $(this).attr('ref-nama');
+    var pemilik = $(this).attr('pemilik');
+    var ref_pemilik = $(this).attr('ref-pemilik');
+    var jumlah = $(this).attr('jumlah');
+    var tipe = $(this).attr('tipe');
+    $('.table-forward').append('<tr><td ref="'+ref_nama+'">' + nama + '</td><td ref="'+ ref_pemilik+'">' + pemilik + '</td><td ref="'+ tipe +'">' + tipe + '</td><td ref="'+ jumlah +'">' + jumlah + '</td><td ref=""><button type="button" onclick="show(\''+id+'\', this)" class="btn btn-sm btn-danger btn-show"><span class="fa fa-times"></span></button></td></tr>');
+    $(this).parent().parent().parent().parent().parent().hide();
+  });
+
+  $('.btn-tolak').click(function() {
+    var ref_nama = $('#ref_nama').val();
+    var nama = $('#nama').val();
+    var pesan = $('#pesan').val();
+    var id = $('#tolak-id').val();
+    var jumlah = $('#jumlah').val();
+    var tipe = $('#tipe').val();
+    $('.table-tolak').append('<tr><td ref="'+ref_nama+'">' + nama + '</td><td ref="'+tipe+'">' + tipe + '</td><td ref="'+jumlah+'">' + jumlah + '</td><td ref="'+pesan+'">' + pesan + '</td><td ref=""><button type="button" onclick="show(\''+id+'\', this)" class="btn btn-sm btn-danger btn-show"><span class="fa fa-times"></span></button></td></tr>');
+    $('#' + id).hide();
+  })
+
+  function show(id, e) {
+    $('#' + id).show();
+    $(e).parent().parent().remove();
+  }
+
   function validate(form) {
-    if($('#alat-counter').val() == 0 && $('#bahan-counter').val() == 0) {
-      alert('Mohon isi minimal satu alat atau bahan!');
+    var asked_item_count = parseInt('{{ count($pAlats) }}') + parseInt('{{ count($pBahans) }}');
+    var processed_item_count = $('.item[style="display: none;"]').length;
+    if(asked_item_count > processed_item_count) {
+      alert('Mohon selesaikan terlebih dahulu!');
       return false;
-    }
-    else {
+    } else {
+      $('#forwarded').val(JSON.stringify(getData('table-forward')));
+      $('#rejected').val(JSON.stringify(getData('table-tolak')));
       return confirm('Lanjutkan?');
     }
   }
+
+  function getData(table) {
+      var myTableArray = [];
+      $("."+ table +" tr").each(function() {
+        var arrayOfThisRow = [];
+        var tableData = $(this).find('td');
+        if (tableData.length > 0) {
+          tableData.each(function() { arrayOfThisRow.push($(this).attr('ref')); });
+          myTableArray.push(arrayOfThisRow);
+        }
+      });
+      return myTableArray;
+    }
 </script>
 @endsection
 

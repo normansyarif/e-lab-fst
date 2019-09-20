@@ -1,6 +1,6 @@
 @extends('layouts.labor-sb')
 
-@section('title', 'Pengusulan Alat dan Bahan | e-Inventory')
+@section('title', 'Pengusulan | e-Inventory')
 
 @section('label', 'Pengusulan Alat dan Bahan')
 
@@ -14,108 +14,76 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addModal">Buat usulan</button>
+        <a href="{{ route('lab.kelola.buat-pengajuan') }}" class="btn btn-primary float-right add-btn-table"><span class="fa fa-plus"></span></a>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Nama Item</th>
+              <th>Pengaju</th>
+              <th>Teraju</th>
               <th>Jumlah</th>
               <th>Tanggal</th>
-              <th>Jenis</th>
+              <th>Jenis Pengajuan</th>
               <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
+            
+            @if($ajuans)
+            @foreach($ajuans as $ajuan)
             <tr>
-              <td>Mikroskop</td>
-              <td>15</td>
-              <td>08-88-2010 08:00</td>
+              <td>{{ $ajuan->pengaju->name }}</td>
+              <td>{{ $ajuan->teraju->name }}</td>
+              <td><a onclick="cekDistribusi('{{ $ajuan->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $ajuan->jumlah }}</a></td>
+              <td>{{ date('d-m-Y', strtotime($ajuan->created_at)) }}</td>
+
+              @if($ajuan->jenis_ajuan == 1)
               <td>Permintaan</td>
-              <td class="text-success">
-                <p>Selesai</p>
-                <p class="btn-text-info">(Item diambil dari gudang)</p>
-              </td>
-              <td>
-                <a title="Download surat permohonan" href="#" class="btn btn-success btn-sm">Download surat</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>15</td>
-              <td>08-88-2010 08:00</td>
+              @elseif($ajuan->jenis_ajuan == 2)
               <td>Peminjaman</td>
-              <td class="text-success">
-                <p>Selesai</p>
-                <p class="btn-text-info">(Item diambil dari lab 3)</p>
-              </td>
-              <td>
-                <a title="Download surat permohonan" href="#" class="btn btn-success btn-sm">Download surat</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Alkohol</td>
-              <td>100 ml</td>
-              <td>08-88-2010 08:00</td>
-              <td>Permintaan</td>
-              <td>Mengunggu validasi gudang</td>
-              <td>
-                <a title="Cetak surat pengajuan ke gudang" href="#" class="btn btn-secondary btn-sm">Cetak surat</a>
-                <p class="btn-text-info">(Diserahkan ke gudang)</p>
-              </td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Permintaan</td>
+              @endif
+
+              @if($ajuan->status == 1)
               <td>Mengunggu konfirmasi gudang</td>
               <td></td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Peminjaman</td>
+
+              @elseif($ajuan->status == 2)
+              <td>Mengunggu validasi gudang</td>
               <td>
-                <p>Menunggu konfirmasi lab 1</p>
-                <p class="btn-text-info">(Pengajuan diteruskan ke lab 1)</p>
+                <a title="Cetak surat pengajuan ke gudang" href="{{ route('print.surat.pengajuan', $ajuan->id) }}" class="btn btn-secondary btn-sm">Cetak surat</a>
+                <p class="btn-text-info">(Diserahkan ke gudang)</p>
               </td>
+
+              @elseif($ajuan->status == 3)
+              <td>Mengunggu konfirmasi {{ $ajuan->teraju->name }}</td>
               <td></td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Peminjaman</td>
-              <td>Menunggu validasi lab 1</td>
+
+              @elseif($ajuan->status == 4)
+              <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
               <td>
-                <a title="Cetak surat pengajuan ke lab 1" href="#" class="btn btn-secondary btn-sm">Cetak surat</a>
-                <p class="btn-text-info">(Diserahkan ke lab 1)</p>
+                <a title="Cetak surat pengajuan ke {{ $ajuan->teraju->name }}" href="#" class="btn btn-secondary btn-sm">Cetak surat</a>
+                <p class="btn-text-info">(Diserahkan ke {{ $ajuan->teraju->name }})</p>
               </td>
-            </tr>
-            <tr>
-              <td>Alkohol</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Permintaan</td>
-              <td class="text-danger">
-                <p>Ditolak oleh lab 5</p>
-                <p class="btn-text-info">Maaf, kami tidak bersedia memberikan stok alkohol kami</p>
-              </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Alkohol</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Permintaan</td>
-              <td class="text-success">
+
+              @elseif($ajuan->status == 5)
+             <td class="text-success">
                 <p>Selesai</p>
-                <p class="btn-text-info">(Pengajuan diteruskan ke dekanat)</p>
+                <p class="btn-text-info">({{ $ajuan->pesan }})</p>
               </td>
               <td></td>
+
+              @elseif($ajuan->status == 6)
+              <td class="text-danger">
+                <p>Ditolak</p>
+                <p class="btn-text-info">({{ $ajuan->pesan }})</p>
+              </td>
+              <td></td>
+              @endif              
+
             </tr>
+            @endforeach
+            @endif
+
           </tbody>
         </table>
       </div>
@@ -127,52 +95,41 @@
 
 @section('modals')
 
-<!-- Add Modal -->
-<div class="modal fade" id="addModal">
-  <div class="modal-dialog">
+<div class="modal fade" id="itemCountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
-
-      <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Buat usulan permintaan</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title" id="exampleModalLabel">Rincian Item</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
-
-      <!-- Modal body -->
       <div class="modal-body">
-        <form>
-
-          <select class="form-control mb-3">
-            <option>-- Pilih Jenis --</option>
-            <option>Bahan</option>
-            <option>Alat</option>
-          </select>
-
-          <select class="form-control mb-3">
-            <option>-- Pilih item --</option>
-            <option>Gelas</option>
-            <option>Pipet tetes</option>
-            <option>Apalah gitu</option>
-          </select>
-
-          <input type="number" name="" placeholder="Jumlah" class="form-control mb-3">
-
-          <select class="form-control mb-3">
-            <option>-- Pilih jenis pengajuan --</option>
-            <option>Permintaan</option>
-            <option>Peminjaman</option>
-          </select>
-
-        </form>
       </div>
-
-      <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Ajukan</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
       </div>
-
     </div>
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+  function cekDistribusi(id_pengajuan) {
+    jQuery.ajax({
+      url: "/ajax/detail-pengajuan/" + id_pengajuan,
+      method: 'get',
+      success: function(result){
+        $('.modal-body').html(result);
+      }});
+  }
+</script>
 @endsection

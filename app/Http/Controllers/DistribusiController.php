@@ -68,7 +68,7 @@ class DistribusiController extends Controller
     }
 
     public function formUpload($id) {
-        return view('item.lab-form-upload-distribusi')->with('id', $id);
+        return view('item.gudang-form-upload-pengajuan')->with('id', $id);
     }
 
     public function postUpload(Request $request, $id) {
@@ -78,7 +78,7 @@ class DistribusiController extends Controller
             $ext = $request->file('surat')->getClientOriginalExtension();
             $allowedExt = ['jpg', 'png', 'pdf'];
             if(!in_array($ext, $allowedExt)) {
-                return redirect(route('form.upload.distribusi'))->with('error', 'Illegal type of file was uploaded.');
+                return redirect(route('form.upload.pengajuan'))->with('error', 'Illegal type of file was uploaded.');
             }else{
                 $filenameToStore = $filename . '_' . time() . '.' . $ext;
                 $request->file('surat')->move(public_path('uploads/distribusi'), $filenameToStore);

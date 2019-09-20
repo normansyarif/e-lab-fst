@@ -25,7 +25,9 @@
 
               @if($labs)
               @foreach($labs as $lab)
+              @if($lab->id != 0)
               <option value="{{ $lab->id }}">{{ $lab->name }}</option>
+              @endif
               @endforeach
               @endif
 

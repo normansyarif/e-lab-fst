@@ -28,8 +28,9 @@ Route::get('/lab/stok/bahan', 'ItemController@laborBahan')->name('labor.stok.bah
 Route::get('/lab/kelola/item-masuk', 'DistribusiController@laborItemMasuk')->name('labor.kelola.item-masuk');
 
 // Pengajuan & pengusulan
-Route::get('/lab/pengusulan', 'AjuUsulController@laborPengusulan')->name('labor.pengusulan');
-Route::get('/lab/pengajuan', 'AjuUsulController@laborPengajuan')->name('labor.pengajuan');
+Route::get('/lab/pengusulan', 'PengajuanController@laborPengusulan')->name('labor.pengusulan');
+Route::get('/lab/pengusulan/buat', 'PengajuanController@laborBuatPengusulan')->name('lab.kelola.buat-pengajuan');
+Route::get('/lab/pengajuan', 'PengajuanController@laborPengajuan')->name('labor.pengajuan');
 
 // Lokasi
 Route::post('/post/labor/create', 'LokasiController@laborPost')->name('labor.post');
@@ -71,10 +72,17 @@ Route::post('/distribusi/{id}/post', 'DistribusiController@postUpload')->name('p
 
 // Pengajuan
 Route::get('/gudang/pengajuan', 'PengajuanController@gudangPengajuan')->name('gudang.pengajuan');
+Route::get('/gudang/permintaan', 'PengajuanController@gudangPermintaan')->name('gudang.permintaan');
 Route::get('/gudang/kelola/pengajuan/buat', 'PengajuanController@gudangBuatPengajuan')->name('gudang.kelola.buat-pengajuan');
 Route::post('/gudang/kelola/pengajuan/post', 'PengajuanController@postKeDekanat')->name('pengajuan.dekanat.post');
 Route::get('/gudang/kelola/pengajuan/print/{id}', 'PengajuanController@printSurat')->name('print.surat.pengajuan');
 Route::get('/gudang/kelola/pengajuan/cek-stok/{id}', 'PengajuanController@cekStok')->name('cekstok.pengajuan');
+Route::post('/gudang/pengajuan/process', 'PengajuanController@gudangPengajuanProcess')->name('gudang.pengajuan.process');
+
+Route::post('/lab/kelola/permintaan/post', 'PengajuanController@postKeGudang')->name('permintaan.gudang.post');
+Route::get('/lab/permintaan', 'PengajuanController@labPermintaan')->name('lab.permintaan');
+Route::get('/gudang/upload/pengajuan/{id}', 'PengajuanController@formUpload')->name('form.upload.pengajuan');
+Route::post('/gudang/upload/pengajuan/{id}/post', 'PengajuanController@postUpload')->name('post.upload.pengajuan');
 
 // Ajax routes
 Route::get('/ajax/cek-stok/alat/{id}', 'ItemController@cekStokAlat')->name('cek.stok.alat');

@@ -99,7 +99,15 @@
 			<li class="nav-item {{ Request::is('gudang/pengajuan') ? 'active' : '' }}">
 				<a class="nav-link" href="{{ route('gudang.pengajuan') }}">
 					<i class="fas fa-fw fa-table"></i>
-					<span>Pengajuan</span>
+					<span>Pengajuan ke Dekan</span>
+				</a>
+			</li>
+
+			<!-- Nav Item - Permintaan -->
+			<li class="nav-item {{ Request::is('gudang/permintaan') ? 'active' : '' }}">
+				<a class="nav-link" href="{{ route('gudang.permintaan') }}">
+					<i class="fas fa-fw fa-table"></i>
+					<span>Permintaan dari Lab</span>
 				</a>
 			</li>
 
