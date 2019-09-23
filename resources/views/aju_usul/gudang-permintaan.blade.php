@@ -43,20 +43,20 @@
               @endif
 
               @if($ajuan->status == 1)
-              <td>Mengunggu konfirmasi gudang</td>
+              <td>Menunggu konfirmasi gudang</td>
               <td>
                 <a title="Periksa stok apakah tersedia di gudang atau tidak" href="{{ route('cekstok.pengajuan', $ajuan->id) }}" class="btn btn-primary btn-sm">Periksa stok</a>
               </td>
               @elseif($ajuan->status == 2)
-              <td>Mengunggu validasi gudang</td>
+              <td>Menunggu validasi gudang</td>
               <td>
                 <a title="Upload surat permohonan yang telah ditandatangi oleh staf gudang" href="{{ route('form.upload.pengajuan', $ajuan->id) }}" class="btn btn-info btn-sm">Upload surat</a>
               </td>
               @elseif($ajuan->status == 3)
-              <td>Mengunggu konfirmasi lab {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu konfirmasi {{ $ajuan->teraju->name }}</td>
               <td></td>
               @elseif($ajuan->status == 4)
-              <td>Mengunggu validasi lab {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
               <td></td>
               @elseif($ajuan->status == 5)
               <td class="text-success">

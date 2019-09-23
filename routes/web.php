@@ -78,6 +78,8 @@ Route::post('/gudang/kelola/pengajuan/post', 'PengajuanController@postKeDekanat'
 Route::get('/gudang/kelola/pengajuan/print/{id}', 'PengajuanController@printSurat')->name('print.surat.pengajuan');
 Route::get('/gudang/kelola/pengajuan/cek-stok/{id}', 'PengajuanController@cekStok')->name('cekstok.pengajuan');
 Route::post('/gudang/pengajuan/process', 'PengajuanController@gudangPengajuanProcess')->name('gudang.pengajuan.process');
+Route::get('/labor/kelola/pengajuan/cek-stok/{id}', 'PengajuanController@cekStokLabor')->name('cekstoklabor.pengajuan');
+Route::post('/lab/pengajuan/process', 'PengajuanController@labPengajuanProcess')->name('lab.pengajuan.process');
 
 Route::post('/lab/kelola/permintaan/post', 'PengajuanController@postKeGudang')->name('permintaan.gudang.post');
 Route::get('/lab/permintaan', 'PengajuanController@labPermintaan')->name('lab.permintaan');

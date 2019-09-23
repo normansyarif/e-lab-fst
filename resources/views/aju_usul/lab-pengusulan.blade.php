@@ -61,7 +61,7 @@
               @elseif($ajuan->status == 4)
               <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
               <td>
-                <a title="Cetak surat pengajuan ke {{ $ajuan->teraju->name }}" href="#" class="btn btn-secondary btn-sm">Cetak surat</a>
+                <a title="Cetak surat pengajuan ke {{ $ajuan->teraju->name }}" href="{{ route('print.surat.pengajuan', $ajuan->id) }}" class="btn btn-secondary btn-sm">Cetak surat</a>
                 <p class="btn-text-info">(Diserahkan ke {{ $ajuan->teraju->name }})</p>
               </td>
 

@@ -17,57 +17,60 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Nama Item</th>
+              <th>Pengaju</th>
+              <th>Teraju</th>
               <th>Jumlah</th>
               <th>Tanggal</th>
-              <th>Jenis</th>
+              <th>Jenis Pengajuan</th>
               <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
+            @if($ajuans)
+            @foreach($ajuans as $ajuan)
             <tr>
-              <td>Mikroskop</td>
-              <td>15</td>
-              <td>08-88-2010 08:00</td>
-              <td>Peminjaman</td>
-              <td class="text-success">Selesai</td>
-              <td>
-                <a title="Download surat permohonan" href="#" class="btn btn-success btn-sm">Download surat</a>
-                <a href="#" class="btn btn-danger btn-sm mt-1">Permintaan pengembalian</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Peminjaman</td>
-              <td>Menunggu konfirmasi lab 1</td>
-              <td>
-                <a title="Periksa stok apakah tersedia di gudang atau tidak" href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#checkModal">Periksa stok</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Mikroskop</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
-              <td>Peminjaman</td>
-              <td>Menunggu validasi lab 1</td>
-              <td>
-                <a href="#" class="btn btn-info btn-sm">Upload surat</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Alkohol</td>
-              <td>1</td>
-              <td>08-88-2010 08:00</td>
+              <td>{{ $ajuan->pengaju->name }}</td>
+              <td>{{ $ajuan->teraju->name }}</td>
+              <td><a onclick="cekDistribusi('{{ $ajuan->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $ajuan->jumlah }}</a></td>
+              <td>{{ date('d-m-Y', strtotime($ajuan->created_at)) }}</td>
+
+              @if($ajuan->jenis_ajuan == 1)
               <td>Permintaan</td>
+              @elseif($ajuan->jenis_ajuan == 2)
+              <td>Peminjaman</td>
+              @endif
+
+              @if($ajuan->status == 3)
+              <td>Mengunggu konfirmasi {{ $ajuan->teraju->name }}</td>
+              <td>
+                <a title="Periksa stok apakah tersedia di gudang atau tidak" href="{{ route('cekstoklabor.pengajuan', $ajuan->id) }}" class="btn btn-primary btn-sm">Periksa stok</a>
+              </td>
+              @elseif($ajuan->status == 4)
+              <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
+              <td>
+                <a href="{{ route('form.upload.pengajuan', $ajuan->id) }}" class="btn btn-info btn-sm">Upload surat</a>
+              </td>
+              @elseif($ajuan->status == 5)
+              <td class="text-success">
+                <p>Selesai</p>
+                <p class="btn-text-info">({{ $ajuan->pesan }})</p>
+              </td>
+              <td>
+                <a title="Lihat surat terima" href="{{ url('uploads/pengajuan/' . $ajuan->surat) }}" class="btn btn-success btn-sm">Surat terima</a>
+              </td>
+
+              @elseif($ajuan->status == 6)
               <td class="text-danger">
                 <p>Ditolak</p>
-                <p class="btn-text-info">Maaf, kami tidak bersedia memberikan stok alkohol kami</p>
+                <p class="btn-text-info">({{ $ajuan->pesan }})</p>
               </td>
               <td></td>
+              @endif              
+
             </tr>
+            @endforeach
+            @endif
           </tbody>
         </table>
       </div>
@@ -79,38 +82,41 @@
 
 @section('modals')
 
-<!-- check Modal -->
-<div class="modal fade" id="checkModal">
-  <div class="modal-dialog">
+<div class="modal fade" id="itemCountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
-      
-      <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Periksa stok Alkohol</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title" id="exampleModalLabel">Rincian Item</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
-      
-      <!-- Modal body -->
       <div class="modal-body">
-
-        <p>Lab 5 ingin <strong>meminta</strong> alkohol.</p>
-        <p>Jumlah alkohol di lab 1: <strong>50ml</strong>.</p>
-        
-        <div class="mb-3">
-          <button type="button" class="btn btn-success btn-sm" data-dismiss="modal">Terima</button>
-          <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Tolak</button>
-        </div>
-
-        <input type="" name="" placeholder="Pesan (opsional)" class="form-control">
       </div>
-      
-      <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
       </div>
-      
     </div>
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+    }
+  });
+
+  function cekDistribusi(id_pengajuan) {
+    jQuery.ajax({
+      url: "/ajax/detail-pengajuan/" + id_pengajuan,
+      method: 'get',
+      success: function(result){
+        $('.modal-body').html(result);
+      }});
+  }
+</script>
 @endsection

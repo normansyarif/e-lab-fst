@@ -1,4 +1,4 @@
-@extends('layouts.gudang-sb')
+@extends('layouts.labor-sb')
 
 @section('title', 'Distribusi | e-Inventory')
 
@@ -14,7 +14,7 @@
     </div>
     <div class="card-body">
 
-      <form method="post" action="{{ route('gudang.pengajuan.process') }}" onsubmit="return validate(this);">
+      <form method="post" action="{{ route('lab.pengajuan.process') }}" onsubmit="return validate(this);">
         @csrf
 
         <input type="hidden" name="pengajuan-id" id="pengajuan-id" value="{{ $pengajuan->id }}">
@@ -47,7 +47,7 @@
                   
                   @if($pAlat->alat->stoks)
                   @foreach($pAlat->alat->stoks as $stok)
-                  @if($stok->user->id != $pengajuan->id_pengaju)
+                  @if($stok->user->id == $pengajuan->id_teraju)
                   @if($pAlat->jumlah <= $stok->stok)
                   <tr>
                     <td>{{ $stok->user->name }}</td>
@@ -83,7 +83,7 @@
                   
                   @if($pBahan->bahan->stoks)
                   @foreach($pBahan->bahan->stoks as $stok)
-                  @if($stok->user->id != $pengajuan->id_pengaju)
+                  @if($stok->user->id == $pengajuan->id_teraju)
                   @if($pBahan->jumlah <= $stok->stok)
                   <tr>
                     <td>{{ $stok->user->name }}</td>
@@ -107,7 +107,7 @@
           </div>
 
           <div class="add-dist col-md-4">
-            <label class="mb-3">Alat & bahan diteruskan</label>
+            <label class="mb-3">Alat & bahan diterima</label>
 
             <div class="dist-alat-wrapper">
 
