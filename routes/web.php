@@ -85,9 +85,31 @@ Route::post('/lab/kelola/permintaan/post', 'PengajuanController@postKeGudang')->
 Route::get('/lab/permintaan', 'PengajuanController@labPermintaan')->name('lab.permintaan');
 Route::get('/gudang/upload/pengajuan/{id}', 'PengajuanController@formUpload')->name('form.upload.pengajuan');
 Route::post('/gudang/upload/pengajuan/{id}/post', 'PengajuanController@postUpload')->name('post.upload.pengajuan');
+Route::post('/return/{id}', 'PengajuanController@returnItem')->name('return.item');
+
+// Kategori & jenis
+Route::get('/gudang/kategori', 'ItemController@indexKategori')->name('kategori.index');
+Route::post('/gudang/kategori/post', 'ItemController@postKategori')->name('kategori.post');
+Route::post('/gudang/kategori/edit', 'ItemController@editKategori')->name('kategori.edit');
+Route::post('/gudang/kategori/{id}/delete', 'ItemController@deleteKategori')->name('kategori.delete');
+Route::get('/gudang/jenis', 'ItemController@indexJenis')->name('jenis.index');
+Route::post('/gudang/jenis/post', 'ItemController@postJenis')->name('jenis.post');
+Route::post('/gudang/jenis/edit', 'ItemController@editJenis')->name('jenis.edit');
+Route::post('/gudang/jenis/{id}/delete', 'ItemController@deleteJenis')->name('jenis.delete');
 
 // Ajax routes
 Route::get('/ajax/cek-stok/alat/{id}', 'ItemController@cekStokAlat')->name('cek.stok.alat');
 Route::get('/ajax/cek-stok/bahan/{id}', 'ItemController@cekStokBahan')->name('cek.stok.bahan');
 Route::get('/ajax/detail-distribusi/{id_distribusi}', 'DistribusiController@cekDetail')->name('distribusi.detail');
 Route::get('/ajax/detail-pengajuan/{id_pengajuan}', 'PengajuanController@cekDetail')->name('pengajuan.detail');
+
+// Admin
+Route::get('/admin/lokasi/gudang', 'AdminController@gudang')->name('admin.gudang');
+Route::get('/admin/lokasi/labor', 'AdminController@labor')->name('admin.labor');
+Route::post('/admin/labor/create', 'AdminController@laborPost')->name('labor.post');
+Route::post('/admin/gudang/create', 'AdminController@gudangPost')->name('gudang.post');
+
+Route::get('/admin/users', 'AdminController@users')->name('user.index');
+Route::post('/admin/users/post', 'AdminController@postUser')->name('user.post');
+Route::post('/admin/users/edit', 'AdminController@editUser')->name('user.edit');
+Route::post('/admin/users/{id}/delete', 'AdminController@deleteUser')->name('user.delete');

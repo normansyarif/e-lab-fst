@@ -145,4 +145,66 @@ class ItemController extends Controller
         $stok = StokBahan::where('id_bahan', $id);
         return view('ajax.detail-stok-bahan')->with('bahan', $bahan)->with('stoks', $stok->get())->with('grandStock', $stok->sum('stok'));
     }
+
+    // Kategori
+    public function indexKategori() {
+        $kats = Kategori::all();
+        return view('item.gudang-kelola-kategori')->with('kats', $kats);
+    }
+
+    public function postKategori(Request $req) {
+        $kat = new Kategori;
+        $kat->nama = $req->input('nama');
+        $kat->save();
+        return redirect(route('kategori.index'))->with('success', 'Berhasil menambah kategori');
+    }
+
+    public function deleteKategori($id) {
+        $kat = Kategori::find($id);
+
+        if(count($kat->alat) > 0) {
+            return redirect(route('kategori.index'))->with('error', 'Tidak dapat menghapus karena terdapat alat yang menggunakan kategori ini');
+        }else{
+            $kat->delete();
+            return redirect(route('kategori.index'))->with('success', 'Berhasil menghapus kategori');
+        }
+    }
+
+    public function editKategori(Request $req) {
+        $kat = Kategori::find($req->input('id_kategori'));
+        $kat->nama = $req->input('nama_kategori');
+        $kat->save();
+        return redirect(route('kategori.index'))->with('success', 'Berhasil mengubah kategori');
+    }
+
+    // Jenis
+    public function indexJenis() {
+        $jenis = Jenis::all();
+        return view('item.gudang-kelola-jenis')->with('jenis', $jenis);
+    }
+
+    public function postJenis(Request $req) {
+        $jenis = new Jenis;
+        $jenis->nama = $req->input('nama');
+        $jenis->save();
+        return redirect(route('jenis.index'))->with('success', 'Berhasil menambah jenis');
+    }
+
+    public function deleteJenis($id) {
+        $jenis = Jenis::find($id);
+
+        if(count($jenis->bahan) > 0) {
+            return redirect(route('jenis.index'))->with('error', 'Tidak dapat menghapus karena terdapat bahan yang menggunakan jenis ini');
+        }else{
+            $jenis->delete();
+            return redirect(route('jenis.index'))->with('success', 'Berhasil menghapus jenis');
+        }
+    }
+
+    public function editJenis(Request $req) {
+        $jenis = Jenis::find($req->input('id_jenis'));
+        $jenis->nama = $req->input('nama_jenis');
+        $jenis->save();
+        return redirect(route('jenis.index'))->with('success', 'Berhasil mengubah jenis');
+    }
 }

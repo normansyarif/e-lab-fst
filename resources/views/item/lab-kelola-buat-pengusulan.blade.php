@@ -19,6 +19,13 @@
 
         <div class="row">
 
+          <div class="col-md-12 mb-4">
+            <select class="form-control" name="tipe" required>
+              <option value="1" selected>Permintaan</option>
+              <option value="2">Peminjaman</option>
+            </select>
+          </div>
+
           <div class="add-dist col-md-6">
             <label class="mb-3">Pengajuan Alat</label>
 

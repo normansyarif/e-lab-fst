@@ -66,29 +66,43 @@
               </td>
 
               @elseif($ajuan->status == 5)
-             <td class="text-success">
+              <td class="text-success">
                 <p>Selesai</p>
                 <p class="btn-text-info">({{ $ajuan->pesan }})</p>
               </td>
-              <td></td>
+              <td>
+                <a title="Lihat surat terima" href="{{ url('uploads/pengajuan/' . $ajuan->surat) }}" class="btn btn-success btn-sm">Surat terima</a>
 
-              @elseif($ajuan->status == 6)
-              <td class="text-danger">
-                <p>Ditolak</p>
-                <p class="btn-text-info">({{ $ajuan->pesan }})</p>
-              </td>
-              <td></td>
-              @endif              
+                @if($ajuan->jenis_ajuan == 2 && $ajuan->pesan != 'Item telah dikembalikan')
+                <button onclick="
+                if(confirm('Yakin?')) {
+                  $(this).find('form').submit();
+                }
+                " title="Kembalikan item" class="btn btn-warning btn-sm">Kembalikan item
+                <form method="post" action="{{ route('return.item', $ajuan->id) }}">
+                  @csrf
+                </form>
+              </button>
+              @endif
+            </td>
 
-            </tr>
-            @endforeach
-            @endif
+            @elseif($ajuan->status == 6)
+            <td class="text-danger">
+              <p>Ditolak</p>
+              <p class="btn-text-info">({{ $ajuan->pesan }})</p>
+            </td>
+            <td></td>
+            @endif              
 
-          </tbody>
-        </table>
-      </div>
+          </tr>
+          @endforeach
+          @endif
+
+        </tbody>
+      </table>
     </div>
   </div>
+</div>
 </div>
 
 @endsection

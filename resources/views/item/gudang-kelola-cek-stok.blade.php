@@ -31,7 +31,7 @@
               @if($pAlats)
               @foreach($pAlats as $pAlat)
               <div class="item" id="alat-{{ $pAlat->id }}">
-                <label><strong>{{ $pAlat->alat->nama }}</strong>, dibutuhkan {{ $pAlat->jumlah }} buah. <a class="tolak-btn" href="javascript:void(0)" onclick="
+                <label><strong>{{ $pAlat->alat->nama }}</strong>, {{ $pengajuan->jenis_ajuan == 1 ? 'diminta' : 'dipinjam' }} {{ $pAlat->jumlah }} buah. <a class="tolak-btn" href="javascript:void(0)" onclick="
                 $('#ref_nama').val('{{ $pAlat->alat->id }}');
                 $('#nama').val('{{ $pAlat->alat->nama }}');
                 $('#tolak-id').val('alat-{{ $pAlat->id }}');

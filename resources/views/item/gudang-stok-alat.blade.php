@@ -14,6 +14,7 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
+        <a href="{{ route('kategori.index') }}" class="btn btn-info float-right add-btn-table">Kelola kategori</a>
         <button class="btn btn-primary float-right add-btn-table" data-toggle="modal" data-target="#addAlat"><span class="fa fa-plus"></span></button>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>

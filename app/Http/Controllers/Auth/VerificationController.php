@@ -32,6 +32,8 @@ class VerificationController extends Controller
             return '/gudang';
         }else if($role == 2) {
             return '/labor';
+        }else if($role == 3) {
+            return '/admin/users';
         }
     }
 

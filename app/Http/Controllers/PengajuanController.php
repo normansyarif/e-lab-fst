@@ -47,8 +47,8 @@ class PengajuanController extends Controller
     }
 
     public function postKeDekanat(Request $req) {
-       $alatCount = $req->input('alat-counter');
-       $bahanCount = $req->input('bahan-counter');
+     $alatCount = $req->input('alat-counter');
+     $bahanCount = $req->input('bahan-counter');
 
        // Jenis ajuan:
         // 1. Permintaan
@@ -61,37 +61,37 @@ class PengajuanController extends Controller
         // 4. menunggu validasi lab tujuan, gudang no action, lab sumber cetak surat, lab tujuan upload surat
         // 5. selesai, semua pesan, semua surat
         // 6. ditolak, semua pesan
-       $p = new Pengajuan;
-       $p->id_pengaju = 1;
-       $p->id_teraju = 0;
-       $p->jenis_ajuan = 1;
-       $p->jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
-       $p->status = 5;
-       $p->pesan = 'Pengajuan diteruskan ke dekanat.';
-       $p->save();
+     $p = new Pengajuan;
+     $p->id_pengaju = 1;
+     $p->id_teraju = 0;
+     $p->jenis_ajuan = 1;
+     $p->jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
+     $p->status = 5;
+     $p->pesan = 'Pengajuan diteruskan ke dekanat.';
+     $p->save();
 
     	// Insert item distribusi alat
-       for($i = 1; $i <= $alatCount; $i++) {
-          $pa = new PengajuanAlat;
-          $pa->id_pengajuan = $p->id;
-          $pa->id_alat = $req->input('id_alat_' . $i);
-          $pa->jumlah = $req->input('jumlah_alat_' . $i);
-          $pa->save();
-      }
-
-    	// Insert item distribusi bahan
-      for($i = 1; $i <= $bahanCount; $i++) {
-          $pb = new PengajuanBahan;
-          $pb->id_pengajuan = $p->id;
-          $pb->id_bahan = $req->input('id_bahan_' . $i);
-          $pb->jumlah = $req->input('jumlah_bahan_' . $i);
-          $pb->save();
-      }
-
-      return redirect(route('gudang.pengajuan'))->with('success', 'Berhasil membuat pengajuan');
+     for($i = 1; $i <= $alatCount; $i++) {
+      $pa = new PengajuanAlat;
+      $pa->id_pengajuan = $p->id;
+      $pa->id_alat = $req->input('id_alat_' . $i);
+      $pa->jumlah = $req->input('jumlah_alat_' . $i);
+      $pa->save();
   }
 
-  public function postKeGudang(Request $req) {
+    	// Insert item distribusi bahan
+  for($i = 1; $i <= $bahanCount; $i++) {
+      $pb = new PengajuanBahan;
+      $pb->id_pengajuan = $p->id;
+      $pb->id_bahan = $req->input('id_bahan_' . $i);
+      $pb->jumlah = $req->input('jumlah_bahan_' . $i);
+      $pb->save();
+  }
+
+  return redirect(route('gudang.pengajuan'))->with('success', 'Berhasil membuat pengajuan');
+}
+
+public function postKeGudang(Request $req) {
     $alatCount = $req->input('alat-counter');
     $bahanCount = $req->input('bahan-counter');
 
@@ -109,7 +109,7 @@ class PengajuanController extends Controller
     $p = new Pengajuan;
     $p->id_pengaju = auth()->user()->id;
     $p->id_teraju = 1;
-    $p->jenis_ajuan = 1;
+    $p->jenis_ajuan = $req->input('tipe');
     $p->jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
     $p->status = 1;
     $p->pesan = 'Menunggu konfirmasi gudang';
@@ -281,6 +281,7 @@ public function gudangPengajuanProcess(Request $req) {
     $pengajuan = Pengajuan::find($id);
     $idPengaju = $pengajuan->id_pengaju;
     $idTeraju = $pengajuan->id_teraju;
+    $tipe = $pengajuan->jenis_ajuan;
     $pAlat = PengajuanAlat::where('id_pengajuan', $id);
     $pBahan = PengajuanBahan::where('id_pengajuan', $id);
     $pAlat->delete();
@@ -292,7 +293,7 @@ public function gudangPengajuanProcess(Request $req) {
         $pengajuan = new Pengajuan;
         $pengajuan->id_pengaju = $idPengaju;
         $pengajuan->id_teraju = $key;
-        $pengajuan->jenis_ajuan = 1;
+        $pengajuan->jenis_ajuan = $tipe;
 
             // Hitung alat & bahan
         $alat = $bahan = 0;
@@ -340,7 +341,7 @@ public function gudangPengajuanProcess(Request $req) {
         $pengajuan = new Pengajuan;
         $pengajuan->id_pengaju = $idPengaju;
         $pengajuan->id_teraju = $idTeraju;
-        $pengajuan->jenis_ajuan = 1;
+        $pengajuan->jenis_ajuan = $tipe;
 
         // Hitung alat & bahan ditolak
         $alat = $bahan = 0;
@@ -415,6 +416,7 @@ public function labPengajuanProcess(Request $req) {
     $pengajuan = Pengajuan::find($id);
     $idPengaju = $pengajuan->id_pengaju;
     $idTeraju = $pengajuan->id_teraju;
+    $tipe = $pengajuan->jenis_ajuan;
     $pAlat = PengajuanAlat::where('id_pengajuan', $id);
     $pBahan = PengajuanBahan::where('id_pengajuan', $id);
     $pAlat->delete();
@@ -426,7 +428,7 @@ public function labPengajuanProcess(Request $req) {
         $pengajuan = new Pengajuan;
         $pengajuan->id_pengaju = $idPengaju;
         $pengajuan->id_teraju = $key;
-        $pengajuan->jenis_ajuan = 1;
+        $pengajuan->jenis_ajuan = $tipe;
 
             // Hitung alat & bahan
         $alat = $bahan = 0;
@@ -467,7 +469,7 @@ public function labPengajuanProcess(Request $req) {
         $pengajuan = new Pengajuan;
         $pengajuan->id_pengaju = $idPengaju;
         $pengajuan->id_teraju = $idTeraju;
-        $pengajuan->jenis_ajuan = 1;
+        $pengajuan->jenis_ajuan = $tipe;
 
         // Hitung alat & bahan ditolak
         $alat = $bahan = 0;
@@ -510,5 +512,78 @@ public function cekDetail($id_pengajuan) {
     $pa = PengajuanAlat::where('id_pengajuan', $id_pengajuan)->get();
     $pb = PengajuanBahan::where('id_pengajuan', $id_pengajuan)->get();
     return view('ajax.detail-ajuan')->with('pas', $pa)->with('pbs', $pb);
+}
+
+public function returnItem($id) {
+    $ajuan = Pengajuan::find($id);
+    $ajuan->pesan = 'Item telah dikembalikan';
+    $ajuan->save();
+
+    $id_pemberi = $ajuan->id_pengaju;
+    $id_diberi = $ajuan->id_teraju;
+
+        //Update item
+    $pAlats = PengajuanAlat::where('id_pengajuan', $id)->get();
+    foreach($pAlats as $pAlat){
+        $id_alat = $pAlat->id_alat;
+        $jumlah = $pAlat->jumlah;
+
+            // Tambah stok lab peminta
+        $stok = StokAlat::where('id_pemilik', $id_diberi)->where('id_alat', $id_alat)->get()->toArray();
+        if(count($stok) > 0) {
+            $id_lama = $stok[0]['id'];
+            $lama = StokAlat::find($id_lama);
+            $lama->stok += $jumlah;
+            $lama->save();
+        }else{
+            $baru = new StokAlat;
+            $baru->id_pemilik = $id_diberi;
+            $baru->id_alat = $id_alat;
+            $baru->stok = $jumlah;
+            $baru->save();
+        }
+
+            // Kurangi stok gudang / lab diminta
+        $stok = StokAlat::where('id_pemilik', $id_pemberi)->where('id_alat', $id_alat)->get()->toArray();
+        if(count($stok) > 0) {
+            $id_lama = $stok[0]['id'];
+            $lama = StokAlat::find($id_lama);
+            $lama->stok -= $jumlah;
+            $lama->save();
+        }
+    }
+
+    $pBahans = PengajuanBahan::where('id_pengajuan', $id)->get();
+    foreach($pBahans as $pBahan){
+        $id_tujuan = $pengajuan->id_teraju;
+        $id_bahan = $pBahan->id_bahan;
+        $jumlah = $pBahan->jumlah;
+
+            // Tambah stok lab
+        $stok = StokBahan::where('id_pemilik', $id_diberi)->where('id_bahan', $id_bahan)->get()->toArray();
+        if(count($stok) > 0) {
+            $id_lama = $stok[0]['id'];
+            $lama = StokBahan::find($id_lama);
+            $lama->stok += $jumlah;
+            $lama->save();
+        }else{
+            $baru = new StokBahan;
+            $baru->id_pemilik = $id_tujuan;
+            $baru->id_bahan = $id_bahan;
+            $baru->stok = $jumlah;
+            $baru->save();
+        }
+
+            // Kurangi stok gudang
+        $stok = StokBahan::where('id_pemilik', $id_pemberi)->where('id_bahan', $id_bahan)->get()->toArray();
+        if(count($stok) > 0) {
+            $id_lama = $stok[0]['id'];
+            $lama = StokBahan::find($id_lama);
+            $lama->stok -= $jumlah;
+            $lama->save();
+        }
+    }
+
+    return redirect(route('labor.pengusulan'))->with('success', 'Item telah dikembalikan');
 }
 }
