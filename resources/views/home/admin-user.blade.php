@@ -39,6 +39,9 @@
 
               <td>
                 <button onclick="
+                $('#id_user_pass').val('{{ $user->id }}');
+                " data-toggle="modal" data-target="#ubahPass" class="btn btn-sm btn-info">Ubah password</button>
+                <button onclick="
                 $('#id_user').val('{{ $user->id }}');
                 $('#nama_user').val('{{ $user->name }}');
                 " data-toggle="modal" data-target="#editUser" class="btn btn-sm btn-primary">Edit</button>
@@ -115,6 +118,37 @@
         <div class="modal-body">
           <input type="hidden" name="id_user" id="id_user" required>
           <input type="text" name="nama_user" id="nama_user" class="form-control mb-3" placeholder="Nama Pengguna" required>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >Simpan</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="ubahPass">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Ubah password</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <form action="{{ route('user.password') }}" method="post">
+        @csrf
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <input type="hidden" name="id_user" id="id_user_pass" required>
+          <input type="password" name="password" id="user_pass" class="form-control mb-3" placeholder="Password baru" required>
         </div>
 
         <!-- Modal footer -->

@@ -38,6 +38,13 @@ class AdminController extends Controller
         return redirect(route('user.index'))->with('success', 'Berhasil mengubah pengguna');
     }
 
+    public function passwordUser(Request $req) {
+        $user = User::find($req->input('id_user'));
+        $user->password = Hash::make($req->input('password'));
+        $user->save();
+        return redirect(route('user.index'))->with('success', 'Berhasil mengubah password');
+    }
+
     public function gudang() {
     	$gudangs = Gudang::all();
     	return view('lokasi.admin-gudang')->with('gudangs', $gudangs);

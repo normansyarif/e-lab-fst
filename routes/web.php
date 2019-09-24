@@ -113,3 +113,4 @@ Route::get('/admin/users', 'AdminController@users')->name('user.index');
 Route::post('/admin/users/post', 'AdminController@postUser')->name('user.post');
 Route::post('/admin/users/edit', 'AdminController@editUser')->name('user.edit');
 Route::post('/admin/users/{id}/delete', 'AdminController@deleteUser')->name('user.delete');
+Route::post('/admin/users/pass', 'AdminController@passwordUser')->name('user.password');
