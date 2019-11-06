@@ -9,7 +9,7 @@ class AlatMasuk extends Model
     protected $table = 'alat_masuk';
 
     public function user() {
-    	return $this->belongsTo('App\User', 'id_user');
+    	return $this->belongsTo('App\Lokasi', 'id_user');
     }
 
     public function alat() {

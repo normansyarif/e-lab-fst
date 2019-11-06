@@ -9,12 +9,16 @@
     <tr>
       <th>Pemilik</th>
       <th>Stok</th>
+      <th>Kondisi Baik</th>
+      <th>Kondisi Buruk</th>
     </tr>
     @if($stoks)
     @foreach($stoks as $stok)
     <tr>
-      <td>{{ $stok->user->name }}</td>
-      <td>{{ $stok->stok }}</td>
+      <td>{{ $stok->user->nama }}</td>
+      <td>{{ $stok->stok }} {{ $bahan->unit }}</td>
+      <td>{{ $stok->baik }} {{ $bahan->unit }}</td>
+      <td>{{ $stok->buruk }} {{ $bahan->unit }}</td>
     </tr>
     @endforeach
     @endif

@@ -48,11 +48,11 @@
                   @if($pAlat->alat->stoks)
                   @foreach($pAlat->alat->stoks as $stok)
                   @if($stok->user->id != $pengajuan->id_pengaju)
-                  @if($pAlat->jumlah <= $stok->stok)
+                  @if($pAlat->jumlah <= $stok->baik)
                   <tr>
-                    <td>{{ $stok->user->name }}</td>
+                    <td>{{ $stok->user->nama }}</td>
                     <td>{{ $stok->stok }}</td>
-                    <td><button ref-nama="{{ $pAlat->alat->id }}" nama="{{ $pAlat->alat->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pAlat->jumlah }}" tipe="Alat" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
+                    <td><button ref-nama="{{ $pAlat->alat->id }}" nama="{{ $pAlat->alat->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->nama }}" jumlah="{{ $pAlat->jumlah }}" tipe="Alat" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
                   @endif
                   @endif
@@ -84,11 +84,11 @@
                   @if($pBahan->bahan->stoks)
                   @foreach($pBahan->bahan->stoks as $stok)
                   @if($stok->user->id != $pengajuan->id_pengaju)
-                  @if($pBahan->jumlah <= $stok->stok)
+                  @if($pBahan->jumlah <= $stok->baik)
                   <tr>
-                    <td>{{ $stok->user->name }}</td>
+                    <td>{{ $stok->user->nama }}</td>
                     <td>{{ $stok->stok }} {{ $pBahan->bahan->unit }}</td>
-                    <td><button ref-nama="{{ $pBahan->bahan->id }}" nama="{{ $pBahan->bahan->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pBahan->jumlah }}" tipe="Bahan" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
+                    <td><button ref-nama="{{ $pBahan->bahan->id }}" nama="{{ $pBahan->bahan->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->nama }}" jumlah="{{ $pBahan->jumlah }}" tipe="Bahan" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
                   @endif
                   @endif

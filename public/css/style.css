@@ -104,3 +104,11 @@
   color: #f00;
   text-decoration: none;
 }
+
+.card-link:hover {
+  text-decoration: none;
+}
+
+.btn-sm {
+  margin-bottom: 5px;
+}

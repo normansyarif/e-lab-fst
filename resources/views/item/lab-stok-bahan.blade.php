@@ -17,8 +17,13 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Nama Alat</th>
+              <td>Kode</td>
+              <th>Nama Bahan</th>
               <th>Jenis</th>
+              <th>Formula</th>
+              <th>Berat Molekul</th>
+              <th>Kondisi Baik</th>
+              <th>Kondisi Buruk</th>
               <th>Jumlah</th>
             </tr>
           </thead>
@@ -27,8 +32,24 @@
             @if($stoks)
             @foreach($stoks as $stok)
             <tr>
+              <td>{{ $stok->bahan->kode }}</td>
               <td>{{ $stok->bahan->nama }}</td>
               <td>{{ $stok->bahan->jenis->nama }}</td>
+              <td>{{ $stok->bahan->formula }}</td>
+              <td>{{ $stok->bahan->berat_molekul }}</td>
+
+              @if(isset($stok->kondisi_baik->jumlah))
+              <td>{{ $stok->kondisi_baik->jumlah }} {{ $stok->bahan->unit }}</td>
+              @else
+              <td>-</td>
+              @endif
+
+              @if(isset($stok->kondisi_buruk->jumlah))
+              <td>{{ $stok->kondisi_buruk->jumlah }} {{ $stok->bahan->unit }}</td>
+              @else
+              <td>-</td>
+              @endif
+
               <td>{{ $stok->stok }} {{ $stok->bahan->unit }}</td>
             </tr>
             @endforeach

@@ -30,14 +30,13 @@
             @foreach($distribusis as $distribusi)
             <tr>
               <td>{{ date('d-m-Y', strtotime($distribusi->created_at)) }}</td>
-              <td>{{ $distribusi->tujuan->name }}</td>
+              <td>{{ $distribusi->tujuan->nama }}</td>
               <td><a onclick="cekDistribusi('{{ $distribusi->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $distribusi->total_jumlah }}</a></td>
               
               @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
               <td>
-                <a href="{{ route('print.surat.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Cetak surat</a>
-                <p class="btn-text-info">(Diserahkan ke {{ $distribusi->tujuan->name }})</p>
+                <a href="{{ route('form.upload.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Upload surat</a>
               </td>
               @elseif($distribusi->status == 2)
               <td>Selesai</td>

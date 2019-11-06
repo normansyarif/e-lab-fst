@@ -114,3 +114,12 @@ Route::post('/admin/users/post', 'AdminController@postUser')->name('user.post');
 Route::post('/admin/users/edit', 'AdminController@editUser')->name('user.edit');
 Route::post('/admin/users/{id}/delete', 'AdminController@deleteUser')->name('user.delete');
 Route::post('/admin/users/pass', 'AdminController@passwordUser')->name('user.password');
+Route::post('/role/update', 'AdminController@updateRole')->name('role.update');
+Route::post('/lokasi/{id}/{tipe}/delete', 'AdminController@deleteLokasi')->name('lokasi.delete');
+Route::post('/lokasi/edit', 'AdminController@editLokasi')->name('lokasi.edit');
+
+// QRCODE
+Route::get('/qr/data/alat/{id}', 'ItemController@showQRAlat')->name('qr.data.alat');
+Route::get('/qr/data/bahan/{id}', 'ItemController@showQRBahan')->name('qr.data.bahan');
+Route::get('/qr/code/alat/{id}', 'ItemController@codeQRAlat')->name('qr.code.alat');
+Route::get('/qr/code/bahan/{id}', 'ItemController@codeQRBahan')->name('qr.code.bahan');

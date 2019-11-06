@@ -13,6 +13,6 @@ class BahanKeluar extends Model
     }
 
     public function tujuan() {
-    	return $this->belongsTo('App\User', 'id_tujuan');
+    	return $this->belongsTo('App\Lokasi', 'id_tujuan');
     }
 }

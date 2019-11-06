@@ -19,8 +19,13 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Kode</th>
               <th>Nama Bahan</th>
               <th>Jenis</th>
+              <th>Formula</th>
+              <th>Berat Molekul</th>
+              <th>Kondisi Baik</th>
+              <th>Kondisi Buruk</th>
               <th>Jumlah</th>
               <th>Aksi</th>
             </tr>
@@ -29,16 +34,59 @@
             @if($bahs)
             @foreach($bahs as $bah)
             <tr>
+              <td>{{ $bah->kode }}</td>
               <td>{{ $bah->nama }}</td>
               <td>{{ $bah->jenis->nama }}</td>
+              <td>{{ $bah->formula }}</td>
+              <td>{{ $bah->berat_molekul }}</td>
               
-              @if(count($bah->stoks) > 0)
-              <td>{{ $bah->stoks[0]->stok }} {{ $bah->unit }}</td>
+              @if(isset($bah->stoks))
+                  @php $ada = false @endphp
+                  @foreach($bah->stoks as $stok)
+                    @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
+                    <td>{{ $stok->baik }}</td>
+                    @php $ada = true @endphp
+                    @endif
+                  @endforeach
+                  @if(!$ada)
+                  <td>0</td>
+                  @endif
               @else
-              <td>0 {{ $bah->unit }}</td>
+              <td>0</td>
+              @endif
+
+              @if(isset($bah->stoks))
+                  @php $ada = false @endphp
+                  @foreach($bah->stoks as $stok)
+                    @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
+                    <td>{{ $stok->buruk }}</td>
+                    @php $ada = true @endphp
+                    @endif
+                  @endforeach
+                  @if(!$ada)
+                  <td>0</td>
+                  @endif
+              @else
+              <td>0</td>
+              @endif
+
+              @if(isset($bah->stoks))
+                  @php $ada = false @endphp
+                  @foreach($bah->stoks as $stok)
+                    @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
+                    <td>{{ $stok->stok }}</td>
+                    @php $ada = true @endphp
+                    @endif
+                  @endforeach
+                  @if(!$ada)
+                  <td>0</td>
+                  @endif
+              @else
+              <td>0</td>
               @endif
               
               <td>
+                <a href="{{ route('qr.code.bahan', $bah->id) }}" class="btn btn-warning btn-sm">QR code</a>
                 <a onclick="
                 $('.add-stock-hidden-id').val('{{ $bah->id }}');
                 $('.add-stock-stok').val('0');
@@ -46,7 +94,10 @@
                 " href="javascript:void(0)" class="btn btn-info btn-sm addStock-btn" data-toggle="modal" data-target="#addStock">Tambah Stok</a>
                 <a onclick="
                 $('.edit-bahan-hidden-id').val('{{ $bah->id }}');
+                $('.edit-bahan-kode').val('{{ $bah->kode }}');
                 $('.edit-bahan-name').val('{{ $bah->nama }}');
+                $('.edit-bahan-formula').val('{{ $bah->formula }}');
+                $('.edit-bahan-berat').val('{{ $bah->berat_molekul }}');
                 $('.edit-bahan-unit').val('{{ $bah->unit }}');
                 $('#id_jenis_edit').val('{{ $bah->id_jenis }}');
                 " href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#editBahan">Edit</a>
@@ -85,8 +136,10 @@
       <form action="{{ route('bahan.post') }}" method="post">
         <div class="modal-body">
           @csrf
+          <input type="text" name="kode" class="form-control mb-3" placeholder="Kode">
           <input type="text" name="nama" class="form-control mb-3" placeholder="Nama bahan">
-
+          <input type="text" name="formula" class="form-control mb-3" placeholder="Formula">
+          <input type="text" name="berat_molekul" class="form-control mb-3" placeholder="Berat Molekul">
           <input type="text" name="unit" class="form-control mb-3" placeholder="Satuan (misal. ml)">
 
           <select class="form-control mb-3" name="id_jenis" required>
@@ -97,12 +150,6 @@
             @endforeach
             @endif
           </select>
-
-          {{-- <select class="form-control mb-3">
-            <option>-- Pilih lokasi penyimpanan --</option>
-            <option>Gudang 1</option>
-            <option>Gudang 2</option>
-          </select> --}}
 
         </div>
 
@@ -133,7 +180,12 @@
         <!-- Modal body -->
         <div class="modal-body">
           <input type="hidden" name="bahan_id" class="add-stock-hidden-id" required>
-          <input type="number" name="stok" class="form-control mb-3 add-stock-stok" placeholder="Jumlah stok" required>
+          <input id="add-total" type="hidden" name="stok" class="form-control mb-3 add-stock-stok" placeholder="Jumlah stok" required>
+          <label>Kondisi baik</label>
+          <input id="add-good" type="number" name="stok_baik" class="form-control mb-3 add-stock-stok add-smt" placeholder="Jumlah stok baik" required>
+          <label>Kondisi buruk</label>
+          <input id="add-bad" type="number" name="stok_buruk" class="form-control mb-3 add-stock-stok add-smt" placeholder="Jumlah stok baik" required>
+          <p><strong>Total <span class="add-total">0</span> <span class="dalam-unit"></span></strong></p>
         </div>
 
         <!-- Modal footer -->
@@ -164,7 +216,10 @@
         <!-- Modal body -->
         <div class="modal-body">
           <input type="hidden" name="bahan_id" class="edit-bahan-hidden-id" required>
+          <input type="text" name="kode" class="form-control mb-3 edit-bahan-kode" placeholder="Kode" required>
           <input type="text" name="nama" class="form-control mb-3 edit-bahan-name" placeholder="Nama bahan" required>
+          <input type="text" name="formula" class="form-control mb-3 edit-bahan-formula" placeholder="Formula" required>
+          <input type="text" name="berat_molekul" class="form-control mb-3 edit-bahan-berat" placeholder="Berat Molekul" required>
           <input type="text" name="unit" class="form-control mb-3 edit-bahan-unit" placeholder="Unit" required>
           <select id="id_jenis_edit" class="form-control mb-3" name="id_jenis" required>
             <option value="" disabled selected>-- Pilih Jenis --</option>
@@ -187,4 +242,16 @@
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  $('.add-smt').on('input', function() {
+    var good = $('#add-good').val();
+    var bad = $('#add-bad').val();
+    var total = parseInt(good) + parseInt(bad);
+    $('.add-total').html(total);
+    $('#add-total').val(total);
+  });
+</script>
 @endsection

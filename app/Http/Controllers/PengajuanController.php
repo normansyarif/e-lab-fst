@@ -11,11 +11,13 @@ use App\PengajuanBahan;
 use App\StokAlat;
 use App\StokBahan;
 use App\User;
+use PDF;
+use App\Lokasi;
 
 class PengajuanController extends Controller
 {
 	public function gudangPengajuan() {
-        $p = Pengajuan::where('id_pengaju', auth()->user()->id)->where('id_teraju', 0)->get();
+        $p = Pengajuan::where('id_pengaju', auth()->user()->in_charge->lokasi->id)->where('id_teraju', 0)->get();
         return view('aju_usul.gudang-pengajuan')->with('ajuans', $p);
     }
 
@@ -25,7 +27,7 @@ class PengajuanController extends Controller
     }
 
     public function laborPengajuan() {
-        $p = Pengajuan::where('id_teraju', auth()->user()->id)->whereIn('status', [3, 4, 5, 6])->get();
+        $p = Pengajuan::where('id_teraju', auth()->user()->in_charge->lokasi->id)->whereIn('status', [3, 4, 5, 6])->get();
         return view('aju_usul.lab-pengajuan')->with('ajuans', $p);
     }
 
@@ -36,14 +38,15 @@ class PengajuanController extends Controller
     }
 
     public function laborPengusulan() {
-        $p = Pengajuan::where('id_pengaju', auth()->user()->id)->get();
+        $p = Pengajuan::where('id_pengaju', auth()->user()->in_charge->lokasi->id)->get();
         return view('aju_usul.lab-pengusulan')->with('ajuans', $p);
     }
 
     public function laborBuatPengusulan() {
         $alat = Alat::all();
         $bahan = Bahan::all();
-        return view('item.lab-kelola-buat-pengusulan')->with('alats', $alat)->with('bahans', $bahan);
+        $gudangs = Lokasi::where('tipe', 1)->get();
+        return view('item.lab-kelola-buat-pengusulan')->with('alats', $alat)->with('bahans', $bahan)->with('gudangs', $gudangs);
     }
 
     public function postKeDekanat(Request $req) {
@@ -62,7 +65,7 @@ class PengajuanController extends Controller
         // 5. selesai, semua pesan, semua surat
         // 6. ditolak, semua pesan
      $p = new Pengajuan;
-     $p->id_pengaju = 1;
+     $p->id_pengaju = auth()->user()->in_charge->lokasi->id;
      $p->id_teraju = 0;
      $p->jenis_ajuan = 1;
      $p->jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
@@ -107,8 +110,8 @@ public function postKeGudang(Request $req) {
         // 5. selesai, semua pesan, semua surat
         // 6. ditolak, semua pesan
     $p = new Pengajuan;
-    $p->id_pengaju = auth()->user()->id;
-    $p->id_teraju = 1;
+    $p->id_pengaju = auth()->user()->in_charge->lokasi->id;
+    $p->id_teraju = $req->input('gudang-tujuan');
     $p->jenis_ajuan = $req->input('tipe');
     $p->jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
     $p->status = 1;
@@ -137,7 +140,11 @@ public function postKeGudang(Request $req) {
 }
 
 public function printSurat($id) {
-    return view('item.print-ajuan')->with('id', $id);
+    $data = [
+        'ajuan' => Pengajuan::find($id)
+    ];
+    $pdf = PDF::loadView('item.print-ajuan', $data);
+    return $pdf->download('surat.pdf');
 }
 
 public function formUpload($id) {
@@ -145,6 +152,8 @@ public function formUpload($id) {
 }
 
 public function postUpload(Request $request, $id) {
+    $msg = '';
+
     if($request->hasFile('surat')) {
         $filenameWithExt = $request->file('surat')->getClientOriginalName();
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -180,12 +189,15 @@ public function postUpload(Request $request, $id) {
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokAlat::find($id_lama);
+            $lama->baik += $jumlah;
             $lama->stok += $jumlah;
             $lama->save();
         }else{
             $baru = new StokAlat;
             $baru->id_pemilik = $id_diberi;
             $baru->id_alat = $id_alat;
+            $baru->baik = $jumlah;
+            $baru->buruk = 0;
             $baru->stok = $jumlah;
             $baru->save();
         }
@@ -195,8 +207,17 @@ public function postUpload(Request $request, $id) {
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokAlat::find($id_lama);
-            $lama->stok -= $jumlah;
-            $lama->save();
+            if($lama->stok >= $jumlah) {
+                if($lama->stok > $jumlah) {
+                    $lama->baik -= $jumlah;
+                    $lama->stok -= $jumlah;
+                    $lama->save();
+                }else{
+                    $lama->delete();
+                }
+            }else{
+                $msg .= 'Stok ' . $lama->alat->nama . ' tidak berubah karena stok gudang tidak cukup <br>';
+            }
         }
     }
 
@@ -211,12 +232,15 @@ public function postUpload(Request $request, $id) {
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokBahan::find($id_lama);
+            $lama->baik += $jumlah;
             $lama->stok += $jumlah;
             $lama->save();
         }else{
             $baru = new StokBahan;
-            $baru->id_pemilik = $id_tujuan;
+            $baru->id_pemilik = $id_diberi;
             $baru->id_bahan = $id_bahan;
+            $baru->baik = $jumlah;
+            $baru->buruk = 0;
             $baru->stok = $jumlah;
             $baru->save();
         }
@@ -226,14 +250,29 @@ public function postUpload(Request $request, $id) {
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokBahan::find($id_lama);
-            $lama->stok -= $jumlah;
-            $lama->save();
+            if($lama->stok >= $jumlah) {
+                if($lama->stok > $jumlah) {
+                    $lama->baik -= $jumlah;
+                    $lama->stok -= $jumlah;
+                    $lama->save();
+                }else{
+                    $lama->delete();
+                }
+            }else{
+                $msg .= 'Stok ' . $lama->alat->nama . ' tidak berubah karena stok gudang tidak cukup <br>';
+            }
         }
     }
 
-    if(auth()->user()->id == 1) {
+    if(auth()->user()->in_charge->lokasi->tipe == 1) {
+        if($msg != '') {
+            return redirect(route('gudang.permintaan'))->with('error', $msg);
+        }
         return redirect(route('gudang.permintaan'))->with('success', 'Berhasil mengupload surat dan meng-update stok');
-    }else{
+    }else if(auth()->user()->in_charge->lokasi->tipe == 2){
+        if($msg != '') {
+            return redirect(route('labor.pengajuan'))->with('error', $msg);
+        }
         return redirect(route('labor.pengajuan'))->with('success', 'Berhasil mengupload surat dan meng-update stok');
     }
 }
@@ -307,13 +346,15 @@ public function gudangPengajuanProcess(Request $req) {
 
         $pengajuan->jumlah = $alat . ' alat, ' . $bahan . ' bahan';
 
-        if($key == 1) {
+        // Cek apakah teraju adalah gudang
+        $cekTeraju = Lokasi::find($key);
+        if($cekTeraju->tipe == 1) {
             $pengajuan->status = 2;
             $pengajuan->pesan = 'Item diambil dari gudang';
-        }else{
-            $user = User::find($key);
+        }else if($cekTeraju->role == 2){
+            $lokasi = Lokasi::find($key);
             $pengajuan->status = 3;
-            $pengajuan->pesan = 'Menunggu konfirmasi ' . $user->name;
+            $pengajuan->pesan = 'Menunggu konfirmasi ' . $lokasi->nama;
         }
 
         $pengajuan->save();
@@ -442,7 +483,7 @@ public function labPengajuanProcess(Request $req) {
 
         $pengajuan->jumlah = $alat . ' alat, ' . $bahan . ' bahan';
 
-        $user = User::find($key);
+        $user = Lokasi::find($key);
         $pengajuan->status = 4;
         $pengajuan->save();
 

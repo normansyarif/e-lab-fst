@@ -13,6 +13,14 @@ class StokBahan extends Model
     }
 
     public function user() {
-    	return $this->belongsTo('App\User', 'id_pemilik');
+    	return $this->belongsTo('App\Lokasi', 'id_pemilik');
+    }
+
+    public function kondisi_baik() {
+    	return $this->hasOne('App\StokBahanBaik', 'stok_id');
+    }
+
+    public function kondisi_buruk() {
+    	return $this->hasOne('App\StokBahanBuruk', 'stok_id');
     }
 }

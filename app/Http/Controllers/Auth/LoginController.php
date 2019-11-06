@@ -27,13 +27,16 @@ class LoginController extends Controller
      * @var string
      */
     public function redirectTo(){
-        $role = Auth::user()->role;
+        $role = Auth::user()->in_charge->jabatan;
         if($role == 1) {
-            return '/gudang';
-        }else if($role == 2) {
-            return '/labor';
-        }else if($role == 3) {
             return '/admin/users';
+        }else if($role == 2) {
+            $tipe = Auth::user()->in_charge->lokasi->jabatan;
+            if($tipe == 1) {
+                return '/gudang';
+            }else{
+                return '/labor';
+            }
         }
     }
 

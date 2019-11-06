@@ -20,9 +20,18 @@
         <div class="row">
 
           <div class="col-md-12 mb-4">
+            <label>Ajukan</label>
             <select class="form-control" name="tipe" required>
               <option value="1" selected>Permintaan</option>
               <option value="2">Peminjaman</option>
+            </select>
+            <label>alat/bahan ke</label>
+            <select class="form-control" name="gudang-tujuan" required>
+              @if($gudangs)
+              @foreach($gudangs as $gudang)
+              <option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
+              @endforeach
+              @endif
             </select>
           </div>
 
@@ -66,7 +75,7 @@
 
                   @if($bahans)
                   @foreach($bahans as $bahan)
-                  <option value="{{ $bahan->id }}">{{ $bahan->nama }}</option>
+                  <option value="{{ $bahan->id }}">{{ $bahan->nama }} ({{ $bahan->unit }})</option>
                   @endforeach
                   @endif
 

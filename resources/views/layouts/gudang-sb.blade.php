@@ -112,30 +112,6 @@
 			</li>
 
 			<!-- Divider -->
-			<hr class="sidebar-divider">
-
-			<!-- Heading -->
-			<div class="sidebar-heading">
-				Lokasi Ruang
-			</div>
-
-			<!-- Nav Item - Charts -->
-			<li class="nav-item {{ Request::is('gudang/lokasi/gudang') ? 'active' : '' }}">
-				<a class="nav-link" href="{{ route('gudang.gudang') }}">
-					<i class="fas fa-fw fa-chart-area"></i>
-					<span>Gudang</span>
-				</a>
-			</li>
-
-			<!-- Nav Item - Tables -->
-			<li class="nav-item {{ Request::is('gudang/lokasi/labor') ? 'active' : '' }}">
-				<a class="nav-link" href="{{ route('gudang.labor') }}">
-					<i class="fas fa-fw fa-table"></i>
-					<span>Laboratorium</span>
-				</a>
-			</li>
-
-			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block">
 
 			<!-- Sidebar Toggler (Sidebar) -->

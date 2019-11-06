@@ -13,7 +13,15 @@ class StokAlat extends Model
     }
 
     public function user() {
-    	return $this->belongsTo('App\User', 'id_pemilik');
+    	return $this->belongsTo('App\Lokasi', 'id_pemilik');
+    }
+
+    public function kondisi_baik() {
+    	return $this->hasOne('App\StokAlatBaik', 'stok_id');
+    }
+
+    public function kondisi_buruk() {
+    	return $this->hasOne('App\StokAlatBuruk', 'stok_id');
     }
 
 }

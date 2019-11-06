@@ -107,7 +107,7 @@
 			<li class="nav-item {{ Request::is('lab/pengajuan') ? 'active' : '' }}">
 				<a class="nav-link" href="{{ route('labor.pengajuan') }}">
 					<i class="fas fa-fw fa-table"></i>
-					<span>Ajuan</span>
+					<span>Permintaan</span>
 				</a>
 			</li>
 

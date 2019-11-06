@@ -17,8 +17,8 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Pengaju</th>
-              <th>Teraju</th>
+              <th>Lab Asal</th>
+              <th>Lab Tujuan</th>
               <th>Jumlah</th>
               <th>Tanggal</th>
               <th>Jenis Pengajuan</th>
@@ -30,8 +30,8 @@
             @if($ajuans)
             @foreach($ajuans as $ajuan)
             <tr>
-              <td>{{ $ajuan->pengaju->name }}</td>
-              <td>{{ $ajuan->teraju->name }}</td>
+              <td>{{ $ajuan->pengaju->nama }}</td>
+              <td>{{ $ajuan->teraju->nama }}</td>
               <td><a onclick="cekDistribusi('{{ $ajuan->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $ajuan->jumlah }}</a></td>
               <td>{{ date('d-m-Y', strtotime($ajuan->created_at)) }}</td>
 
@@ -42,12 +42,12 @@
               @endif
 
               @if($ajuan->status == 3)
-              <td>Mengunggu konfirmasi {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu konfirmasi {{ $ajuan->teraju->nama }}</td>
               <td>
                 <a title="Periksa stok apakah tersedia di gudang atau tidak" href="{{ route('cekstoklabor.pengajuan', $ajuan->id) }}" class="btn btn-primary btn-sm">Periksa stok</a>
               </td>
               @elseif($ajuan->status == 4)
-              <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu validasi {{ $ajuan->teraju->nama }}</td>
               <td>
                 <a href="{{ route('form.upload.pengajuan', $ajuan->id) }}" class="btn btn-info btn-sm">Upload surat</a>
               </td>

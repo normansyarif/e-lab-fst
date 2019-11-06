@@ -19,7 +19,8 @@
           <thead>
             <tr>
               <th>Nama</th>
-              <th>Tipe</th>
+              <th>Jabatan</th>
+              <th>Lokasi</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -29,18 +30,33 @@
             <tr>
               <td>{{ $user->name }}</td>
               
-              @if($user->role == 1)
-              <td>Gudang</td>
-              @elseif($user->role == 2)
-              <td>Labor</td>
-              @elseif($user->role == 3)
-              <td>Admin</td>
+               @if($user->in_charge)
+                @if($user->in_charge->jabatan == 2)
+                <td>Kepala</td>
+                @elseif($user->in_charge->jabatan == 3)
+                <td>Staff</td>
+                @elseif($user->in_charge->jabatan == 1)
+                <td style="color: red">Administrator</td>
+                @else
+                <td>-</td>
+                @endif
+              @else
+              <td>-</td>
+              @endif
+
+              @if($user->in_charge)
+              <td>{{ $user->in_charge->lokasi->nama }}</td>
+              @else
+              <td>-</td>
               @endif
 
               <td>
                 <button onclick="
+                $('#id_untuk_jabatan').val('{{ $user->id }}');
+                " data-toggle="modal" data-target="#kasihRole" class="btn btn-sm btn-success">Kelola Role</button>
+                {{-- <button onclick="
                 $('#id_user_pass').val('{{ $user->id }}');
-                " data-toggle="modal" data-target="#ubahPass" class="btn btn-sm btn-info">Ubah password</button>
+                " data-toggle="modal" data-target="#ubahPass" class="btn btn-sm btn-info">Password</button>
                 <button onclick="
                 $('#id_user').val('{{ $user->id }}');
                 $('#nama_user').val('{{ $user->name }}');
@@ -53,7 +69,7 @@
                 <form method="post" action="{{ route('user.delete', $user->id) }}">
                   @csrf
                 </form>
-              </button>
+              </button> --}}
             </td>
           </tr>
           @endforeach
@@ -69,7 +85,7 @@
 
 @section('modals')
 <!-- Add Modal -->
-<div class="modal fade" id="addUser">
+{{-- <div class="modal fade" id="addUser">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -84,8 +100,8 @@
 
         <!-- Modal body -->
         <div class="modal-body">
-          <input type="text" name="nama" class="form-control mb-3" placeholder="Nama pengguna" required>
-          <input type="number" name="user_no" class="form-control mb-3" placeholder="Nomor pengguna" required>
+          <input type="text" name="nama" class="form-control mb-3" placeholder="Nama Lengkap" required>
+          <input type="number" name="user_no" class="form-control mb-3" placeholder="NIP/NIK/NIDK" required>
           <input type="password" name="pass" class="form-control mb-3" placeholder="Password" required>
         </div>
 
@@ -98,10 +114,10 @@
 
     </div>
   </div>
-</div>
+</div> --}}
 
 <!-- Add Modal -->
-<div class="modal fade" id="editUser">
+{{-- <div class="modal fade" id="editUser">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -129,10 +145,10 @@
 
     </div>
   </div>
-</div>
+</div> --}}
 
 <!-- Add Modal -->
-<div class="modal fade" id="ubahPass">
+{{-- <div class="modal fade" id="ubahPass">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -160,6 +176,52 @@
 
     </div>
   </div>
-</div>
+</div> --}}
 
+<!-- Add Modal -->
+<div class="modal fade" id="kasihRole">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Kelola Role</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <form action="{{ route('role.update') }}" method="post">
+        @csrf
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <input type="hidden" name="id_user" id="id_untuk_jabatan" required>
+
+          {{-- 1. Kepala
+          2. Staff --}}
+          <select class="form-control mb-3" name="jabatan">
+            <option value="0">-- Tidak ada jabatan --</option>
+            <option value="1">Administrator</option>
+            <option value="2">Kepala</option>
+            <option value="3">Staff</option>
+          </select>
+
+          <select class="form-control mb-3" name="lokasi">
+            @if($lokasis)
+            @foreach($lokasis as $lokasi)
+            <option value="{{ $lokasi->id }}">{{ $lokasi->nama }}</option>
+            @endforeach
+            @endif
+          </select>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" >Simpan</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
 @endsection

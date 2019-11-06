@@ -28,7 +28,7 @@
             @if($keluars)
             @foreach($keluars as $keluar)
             <tr>
-              <td>{{ $keluar->tujuan->name }}</td>
+              <td>{{ $keluar->tujuan->nama }}</td>
               <td>{{ $keluar->bahan->nama }}</td>
               <td>{{ $keluar->jumlah }} {{ $keluar->bahan->unit }}</td>
               <td>{{ $keluar->tgl_keluar }}</td>

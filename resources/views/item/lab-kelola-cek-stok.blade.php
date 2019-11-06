@@ -50,9 +50,9 @@
                   @if($stok->user->id == $pengajuan->id_teraju)
                   @if($pAlat->jumlah <= $stok->stok)
                   <tr>
-                    <td>{{ $stok->user->name }}</td>
+                    <td>{{ $stok->user->nama }}</td>
                     <td>{{ $stok->stok }}</td>
-                    <td><button ref-nama="{{ $pAlat->alat->id }}" nama="{{ $pAlat->alat->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pAlat->jumlah }}" tipe="Alat" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
+                    <td><button ref-nama="{{ $pAlat->alat->id }}" nama="{{ $pAlat->alat->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->nama }}" jumlah="{{ $pAlat->jumlah }}" tipe="Alat" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
                   @endif
                   @endif
@@ -86,9 +86,9 @@
                   @if($stok->user->id == $pengajuan->id_teraju)
                   @if($pBahan->jumlah <= $stok->stok)
                   <tr>
-                    <td>{{ $stok->user->name }}</td>
+                    <td>{{ $stok->user->nama }}</td>
                     <td>{{ $stok->stok }} {{ $pBahan->bahan->unit }}</td>
-                    <td><button ref-nama="{{ $pBahan->bahan->id }}" nama="{{ $pBahan->bahan->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->name }}" jumlah="{{ $pBahan->jumlah }}" tipe="Bahan" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
+                    <td><button ref-nama="{{ $pBahan->bahan->id }}" nama="{{ $pBahan->bahan->nama }}" ref-pemilik="{{ $stok->user->id }}" pemilik="{{ $stok->user->nama }}" jumlah="{{ $pBahan->jumlah }}" tipe="Bahan" type="button" class="btn btn-info btn-sm select-btn"><span class="fa fa-check"></span></button></td>
                   </tr>
                   @endif
                   @endif

@@ -39,7 +39,8 @@
               @if($distribusi->status == 1)
               <td>Menunggu validasi</td>
               <td>
-                <a href="{{ route('form.upload.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Upload surat</a>
+                <a href="{{ route('print.surat.distribusi', $distribusi->id) }}" class="btn btn-primary btn-sm">Cetak surat</a>
+                <p class="btn-text-info">(Diserahkan ke gudang)</p>
               </td>
               @elseif($distribusi->status == 2)
               <td>Selesai</td>

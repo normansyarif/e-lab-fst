@@ -11,6 +11,8 @@ use App\DistribusiAlat;
 use App\DistribusiBahan;
 use App\StokAlat;
 use App\StokBahan;
+use PDF;
+use App\Lokasi;
 
 class DistribusiController extends Controller
 {
@@ -22,7 +24,7 @@ class DistribusiController extends Controller
     public function gudangBuatDistribusi() {
     	$alat = Alat::all();
     	$bahan = Bahan::all();
-    	$labs = User::where('id', '!=', 1)->get();
+    	$labs = Lokasi::where('tipe', 2)->get();
     	return view('item.gudang-kelola-buat-distribusi')->with('labs', $labs)->with('alats', $alat)->with('bahans', $bahan);
     }
 
@@ -31,6 +33,7 @@ class DistribusiController extends Controller
     	$bahanCount = $req->input('bahan-counter');
 
     	$dist = new Distribusi;
+        $dist->id_asal = auth()->user()->in_charge->lokasi->id;
     	$dist->id_tujuan = $req->input('tujuan');
     	$dist->total_jumlah = $alatCount . ' alat, ' . $bahanCount . ' bahan';
     	$dist->status = 1;
@@ -64,14 +67,19 @@ class DistribusiController extends Controller
     }
 
     public function printSurat($id) {
-        return view('item.print-distribusi')->with('id', $id);
+        $data = [
+            'dist' => Distribusi::find($id)
+        ];
+        $pdf = PDF::loadView('item.print-distribusi', $data);
+        return $pdf->download('surat.pdf');
     }
 
     public function formUpload($id) {
-        return view('item.gudang-form-upload-pengajuan')->with('id', $id);
+        return view('item.gudang-form-upload-distribusi')->with('id', $id);
     }
 
     public function postUpload(Request $request, $id) {
+        $msg = '';
         if($request->hasFile('surat')) {
             $filenameWithExt = $request->file('surat')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -96,6 +104,7 @@ class DistribusiController extends Controller
         $dAlats = DistribusiAlat::where('id_distribusi', $id)->get();
         foreach($dAlats as $dAlat){
             $id_tujuan = $dist->id_tujuan;
+            $id_asal = $dist->id_asal;
             $id_alat = $dAlat->id_alat;
             $jumlah = $dAlat->jumlah;
             
@@ -104,29 +113,42 @@ class DistribusiController extends Controller
             if(count($stok) > 0) {
                 $id_lama = $stok[0]['id'];
                 $lama = StokAlat::find($id_lama);
+                $lama->baik += $jumlah;
                 $lama->stok += $jumlah;
                 $lama->save();
             }else{
                 $baru = new StokAlat;
                 $baru->id_pemilik = $id_tujuan;
                 $baru->id_alat = $id_alat;
+                $baru->baik = $jumlah;
+                $baru->buruk = 0;
                 $baru->stok = $jumlah;
                 $baru->save();
             }
 
             // Kurangi stok gudang
-            $stok = StokAlat::where('id_pemilik', 1)->where('id_alat', $id_alat)->get()->toArray();
+            $stok = StokAlat::where('id_pemilik', $id_asal)->where('id_alat', $id_alat)->get()->toArray();
             if(count($stok) > 0) {
                 $id_lama = $stok[0]['id'];
                 $lama = StokAlat::find($id_lama);
-                $lama->stok -= $jumlah;
-                $lama->save();
+                if($lama->stok >= $jumlah) {
+                    if($lama->stok > $jumlah) {
+                        $lama->baik -= $jumlah;
+                        $lama->stok -= $jumlah;
+                        $lama->save();
+                    }else{
+                        $lama->delete();
+                    }
+                }else{
+                    $msg .= 'Stok ' . $lama->alat->nama . ' tidak berubah karena stok gudang tidak cukup <br>';
+                }
             }
         }
 
         $dBahans = DistribusiBahan::where('id_distribusi', $id)->get();
         foreach($dBahans as $dBahan){
             $id_tujuan = $dist->id_tujuan;
+            $id_asal = $dist->id_asal;
             $id_bahan = $dBahan->id_bahan;
             $jumlah = $dBahan->jumlah;
             
@@ -135,31 +157,48 @@ class DistribusiController extends Controller
             if(count($stok) > 0) {
                 $id_lama = $stok[0]['id'];
                 $lama = StokBahan::find($id_lama);
+                $lama->baik += $jumlah;
                 $lama->stok += $jumlah;
                 $lama->save();
+
             }else{
                 $baru = new StokBahan;
                 $baru->id_pemilik = $id_tujuan;
                 $baru->id_bahan = $id_bahan;
+                $baru->baik = $jumlah;
+                $baru->buruk = 0;
                 $baru->stok = $jumlah;
                 $baru->save();
             }
 
             // Kurangi stok gudang
-            $stok = StokBahan::where('id_pemilik', 1)->where('id_bahan', $id_bahan)->get()->toArray();
+            $stok = StokBahan::where('id_pemilik', $id_asal)->where('id_bahan', $id_bahan)->get()->toArray();
             if(count($stok) > 0) {
                 $id_lama = $stok[0]['id'];
                 $lama = StokBahan::find($id_lama);
-                $lama->stok -= $jumlah;
-                $lama->save();
+                if($lama->stok >= $jumlah) {
+                    if($lama->stok > $jumlah) {
+                        $lama->baik -= $jumlah;
+                        $lama->stok -= $jumlah;
+                        $lama->save();
+                    }else{
+                        $lama->delete();
+                    }
+                }else{
+                    $msg .= 'Stok ' . $lama->alat->nama . ' tidak berubah karena stok gudang tidak cukup <br>';
+                }
             }
         }
 
-        return redirect(route('labor.kelola.item-masuk'))->with('success', 'Berhasil mengupload surat');
+        if($msg != '') {
+            return redirect(route('gudang.kelola.distribusi'))->with('success', 'Berhasil mengupload surat');
+        }else{
+            return redirect(route('gudang.kelola.distribusi'))->with('error', $msg);
+        }
     }
 
     public function laborItemMasuk() {
-        $distribusi = Distribusi::where('id_tujuan', auth()->user()->id)->get();
+        $distribusi = Distribusi::where('id_tujuan', auth()->user()->in_charge->lokasi->id)->get();
         return view('item.lab-kelola-item-masuk')->with('distribusis', $distribusi);
     }
 }

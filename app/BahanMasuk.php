@@ -9,7 +9,7 @@ class BahanMasuk extends Model
     protected $table = 'bahan_masuk';
 
     public function user() {
-    	return $this->belongsTo('App\User', 'id_user');
+    	return $this->belongsTo('App\Lokasi', 'id_user');
     }
 
     public function bahan() {

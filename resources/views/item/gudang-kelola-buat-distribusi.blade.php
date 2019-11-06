@@ -25,9 +25,7 @@
 
               @if($labs)
               @foreach($labs as $lab)
-              @if($lab->id != 0)
-              <option value="{{ $lab->id }}">{{ $lab->name }}</option>
-              @endif
+              <option value="{{ $lab->id }}">{{ $lab->nama }}</option>
               @endforeach
               @endif
 
@@ -74,7 +72,7 @@
 
                   @if($bahans)
                   @foreach($bahans as $bahan)
-                  <option value="{{ $bahan->id }}">{{ $bahan->nama }}</option>
+                  <option value="{{ $bahan->id }}">{{ $bahan->nama }} ({{ $bahan->unit }})</option>
                   @endforeach
                   @endif
 

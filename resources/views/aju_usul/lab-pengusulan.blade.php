@@ -18,8 +18,8 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Pengaju</th>
-              <th>Teraju</th>
+              <th>Lab Asal</th>
+              <th>Lab Tujuan</th>
               <th>Jumlah</th>
               <th>Tanggal</th>
               <th>Jenis Pengajuan</th>
@@ -32,8 +32,8 @@
             @if($ajuans)
             @foreach($ajuans as $ajuan)
             <tr>
-              <td>{{ $ajuan->pengaju->name }}</td>
-              <td>{{ $ajuan->teraju->name }}</td>
+              <td>{{ $ajuan->pengaju->nama }}</td>
+              <td>{{ $ajuan->teraju->nama }}</td>
               <td><a onclick="cekDistribusi('{{ $ajuan->id }}')" data-toggle="modal" data-target="#itemCountModal" href="javascript:void(0)">{{ $ajuan->jumlah }}</a></td>
               <td>{{ date('d-m-Y', strtotime($ajuan->created_at)) }}</td>
 
@@ -55,14 +55,14 @@
               </td>
 
               @elseif($ajuan->status == 3)
-              <td>Mengunggu konfirmasi {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu konfirmasi {{ $ajuan->teraju->nama }}</td>
               <td></td>
 
               @elseif($ajuan->status == 4)
-              <td>Mengunggu validasi {{ $ajuan->teraju->name }}</td>
+              <td>Mengunggu validasi {{ $ajuan->teraju->nama }}</td>
               <td>
-                <a title="Cetak surat pengajuan ke {{ $ajuan->teraju->name }}" href="{{ route('print.surat.pengajuan', $ajuan->id) }}" class="btn btn-secondary btn-sm">Cetak surat</a>
-                <p class="btn-text-info">(Diserahkan ke {{ $ajuan->teraju->name }})</p>
+                <a title="Cetak surat pengajuan ke {{ $ajuan->teraju->nama }}" href="{{ route('print.surat.pengajuan', $ajuan->id) }}" class="btn btn-secondary btn-sm">Cetak surat</a>
+                <p class="btn-text-info">(Diserahkan ke {{ $ajuan->teraju->nama }})</p>
               </td>
 
               @elseif($ajuan->status == 5)

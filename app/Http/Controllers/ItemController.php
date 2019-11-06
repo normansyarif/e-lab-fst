@@ -9,21 +9,25 @@ use App\Jenis;
 use App\StokAlat;
 use App\Bahan;
 use App\StokBahan;
-use App\Gudang;
+use App\Lokasi;
 
 class ItemController extends Controller
 {
     public function gudangAlat() {
-        $stoks = StokAlat::where('id_pemilik', 1)->get();
+        $stoks = StokAlat::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->get();
         $als = Alat::all();
         $ks = Kategori::all();
-        $gds = Gudang::all();
-    	return view('item.gudang-stok-alat')->with('ks', $ks)->with('stoks', $stoks)->with('gudangs', $gds)->with('als', $als);
+    	return view('item.gudang-stok-alat')->with('ks', $ks)->with('stoks', $stoks)->with('als', $als);
     }
 
     public function postAlat(Request $req) {
         $alat = new Alat;
-        $alat->nama = $req->input('nama');
+        $alat->kode = $req->input('kode');
+        if($req->input('merk') == '') {
+            $alat->nama = $req->input('nama');
+        }else{
+            $alat->nama = $req->input('nama') . ' ('. $req->input('merk') .')';
+        }
         $alat->id_kategori = $req->input('id_kategori');
         $alat->save();
         return redirect(route('gudang.stok.alat'))->with('success', 'Berhasil menambah alat');
@@ -33,21 +37,24 @@ class ItemController extends Controller
         $alat_id = $req->input('alat_id');
 
         // Cek apakah alat ada di stok
-        $stok = StokAlat::where('id_pemilik', auth()->user()->id)->where('id_alat', $alat_id)->get()->toArray();
+        $stok = StokAlat::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->where('id_alat', $alat_id)->get()->toArray();
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokAlat::find($id_lama);
+            $lama->baik += $req->input('stok_baik');
+            $lama->buruk += $req->input('stok_buruk');
             $lama->stok += $req->input('stok');
             $lama->save();
-            return redirect(route('gudang.stok.alat'))->with('success', 'Berhasil menambah stok');
         }else{
             $baru = new StokAlat;
-            $baru->id_pemilik = auth()->user()->id;
+            $baru->id_pemilik = auth()->user()->in_charge->lokasi->id;
             $baru->id_alat = $alat_id;
+            $baru->baik = $req->input('stok_baik');
+            $baru->buruk = $req->input('stok_buruk');
             $baru->stok = $req->input('stok');
             $baru->save();
-            return redirect(route('gudang.stok.alat'))->with('success', 'Berhasil menambah stok');
         }
+        return redirect(route('gudang.stok.alat'))->with('success', 'Berhasil menambah stok');
     }
 
     public function deleteAlat($id) {
@@ -61,23 +68,30 @@ class ItemController extends Controller
 
     public function editAlat(Request $req) {
         $alat = Alat::find($req->input('alat_id'));
-        $alat->nama = $req->input('nama');
+        $alat->kode = $req->input('kode');
+        if($req->input('merk') == '') {
+            $alat->nama = $req->input('nama');
+        }else{
+            $alat->nama = $req->input('nama') . ' ('. $req->input('merk') .')';
+        }
         $alat->id_kategori = $req->input('id_kategori');
         $alat->save();
         return redirect(route('gudang.stok.alat'))->with('success', 'Berhasil mengubah alat');
     }
 
     public function gudangBahan() {
-        $stoks = StokBahan::where('id_pemilik', 1)->get();
+        $stoks = StokBahan::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->get();
         $bahs = Bahan::all();
         $jens = Jenis::all();
-        $gds = Gudang::all();
-    	return view('item.gudang-stok-bahan')->with('jens', $jens)->with('stoks', $stoks)->with('gudangs', $gds)->with('bahs', $bahs);
+    	return view('item.gudang-stok-bahan')->with('jens', $jens)->with('stoks', $stoks)->with('bahs', $bahs);
     }
 
     public function postBahan(Request $req) {
         $bahan = new Bahan;
+        $bahan->kode = $req->input('kode');
         $bahan->nama = $req->input('nama');
+        $bahan->formula = $req->input('formula');
+        $bahan->berat_molekul = $req->input('berat_molekul');
         $bahan->id_jenis = $req->input('id_jenis');
         $bahan->unit = $req->input('unit');
         $bahan->save();
@@ -88,26 +102,32 @@ class ItemController extends Controller
         $bahan_id = $req->input('bahan_id');
 
         // Cek apakah alat ada di stok
-        $stok = StokBahan::where('id_pemilik', auth()->user()->id)->where('id_bahan', $bahan_id)->get()->toArray();
+        $stok = StokBahan::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->where('id_bahan', $bahan_id)->get()->toArray();
         if(count($stok) > 0) {
             $id_lama = $stok[0]['id'];
             $lama = StokBahan::find($id_lama);
+            $lama->baik += $req->input('stok_baik');
+            $lama->buruk += $req->input('stok_buruk');
             $lama->stok += $req->input('stok');
             $lama->save();
-            return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah stok');
         }else{
             $baru = new StokBahan;
-            $baru->id_pemilik = auth()->user()->id;
+            $baru->id_pemilik = auth()->user()->in_charge->lokasi->id;
             $baru->id_bahan = $bahan_id;
+            $baru->baik = $req->input('stok_baik');
+            $baru->buruk = $req->input('stok_buruk');
             $baru->stok = $req->input('stok');
             $baru->save();
-            return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah stok');
         }
+        return redirect(route('gudang.stok.bahan'))->with('success', 'Berhasil menambah stok');
     }
 
     public function editBahan(Request $req) {
         $bahan = Bahan::find($req->input('bahan_id'));
+        $bahan->kode = $req->input('kode');
         $bahan->nama = $req->input('nama');
+        $bahan->formula = $req->input('formula');
+        $bahan->berat_molekul = $req->input('berat_molekul');
         $bahan->id_jenis = $req->input('id_jenis');
         $bahan->unit = $req->input('unit');
         $bahan->save();
@@ -124,12 +144,12 @@ class ItemController extends Controller
     }
 
     public function laborAlat() {
-        $stoks = StokAlat::where('id_pemilik', auth()->user()->id)->get();
+        $stoks = StokAlat::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->get();
         return view('item.lab-stok-alat')->with('stoks', $stoks);
     }
 
     public function laborBahan() {
-        $stoks = StokBahan::where('id_pemilik', auth()->user()->id)->get();
+        $stoks = StokBahan::where('id_pemilik', auth()->user()->in_charge->lokasi->id)->get();
         return view('item.lab-stok-bahan')->with('stoks', $stoks);
     }
 
@@ -206,5 +226,28 @@ class ItemController extends Controller
         $jenis->nama = $req->input('nama_jenis');
         $jenis->save();
         return redirect(route('jenis.index'))->with('success', 'Berhasil mengubah jenis');
+    }
+
+    //QRCode
+    public function showQRAlat($id) {
+        $alat = Alat::find($id);
+        $stok = StokAlat::where('id_alat', $id);
+        return view('item.qr-data-alat')->with('alat', $alat)->with('stoks', $stok->get())->with('grandStock', $stok->sum('stok'));
+    }
+
+    public function showQRBahan($id) {
+        $bahan = Bahan::find($id);
+        $stok = StokBahan::where('id_bahan', $id);
+        return view('item.qr-data-bahan')->with('bahan', $bahan)->with('stoks', $stok->get())->with('grandStock', $stok->sum('stok'));
+    }
+
+    public function codeQRAlat($id) {
+        $alat = Alat::find($id);
+        return view('item.qr-code-alat')->with('alat', $alat);
+    }
+
+    public function codeQRBahan($id) {
+        $bahan = Bahan::find($id);
+        return view('item.qr-code-bahan')->with('bahan', $bahan);
     }
 }
