@@ -44,45 +44,45 @@
                   @php $ada = false @endphp
                   @foreach($bah->stoks as $stok)
                     @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
-                    <td>{{ $stok->baik }}</td>
+                    <td>{{ $stok->baik }} {{ $bah->unit }}</td>
                     @php $ada = true @endphp
                     @endif
                   @endforeach
                   @if(!$ada)
-                  <td>0</td>
+                  <td>0 {{ $bah->unit }}</td>
                   @endif
               @else
-              <td>0</td>
+              <td>0 {{ $bah->unit }}</td>
               @endif
 
               @if(isset($bah->stoks))
                   @php $ada = false @endphp
                   @foreach($bah->stoks as $stok)
                     @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
-                    <td>{{ $stok->buruk }}</td>
+                    <td>{{ $stok->buruk }} {{ $bah->unit }}</td>
                     @php $ada = true @endphp
                     @endif
                   @endforeach
                   @if(!$ada)
-                  <td>0</td>
+                  <td>0 {{ $bah->unit }}</td>
                   @endif
               @else
-              <td>0</td>
+              <td>0 {{ $bah->unit }}</td>
               @endif
 
               @if(isset($bah->stoks))
                   @php $ada = false @endphp
                   @foreach($bah->stoks as $stok)
                     @if($stok->id_pemilik == Auth::user()->in_charge->lokasi->id)
-                    <td>{{ $stok->stok }}</td>
+                    <td>{{ $stok->stok }} {{ $bah->unit }}</td>
                     @php $ada = true @endphp
                     @endif
                   @endforeach
                   @if(!$ada)
-                  <td>0</td>
+                  <td>0 {{ $bah->unit }}</td>
                   @endif
               @else
-              <td>0</td>
+              <td>0 {{ $bah->unit }}</td>
               @endif
               
               <td>

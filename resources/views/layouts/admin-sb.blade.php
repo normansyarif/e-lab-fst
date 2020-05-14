@@ -73,6 +73,22 @@
 			</li>
 
 			<!-- Divider -->
+			<hr class="sidebar-divider">
+
+			<!-- Heading -->
+			<div class="sidebar-heading">
+				Rekapitulasi
+			</div>
+
+			<!-- Nav Item - Pengajuan -->
+			<li class="nav-item {{ Request::is('rekap/admin') ? 'active' : '' }}">
+				<a class="nav-link" href="{{ route('rekap.admin') }}">
+					<i class="fas fa-fw fa-table"></i>
+					<span>Rekap Stok</span>
+				</a>
+			</li>
+
+			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block">
 
 			<!-- Sidebar Toggler (Sidebar) -->

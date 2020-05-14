@@ -37,19 +37,8 @@
               <td>{{ $stok->bahan->jenis->nama }}</td>
               <td>{{ $stok->bahan->formula }}</td>
               <td>{{ $stok->bahan->berat_molekul }}</td>
-
-              @if(isset($stok->kondisi_baik->jumlah))
-              <td>{{ $stok->kondisi_baik->jumlah }} {{ $stok->bahan->unit }}</td>
-              @else
-              <td>-</td>
-              @endif
-
-              @if(isset($stok->kondisi_buruk->jumlah))
-              <td>{{ $stok->kondisi_buruk->jumlah }} {{ $stok->bahan->unit }}</td>
-              @else
-              <td>-</td>
-              @endif
-
+              <td>{{ $stok->baik }} {{ $stok->bahan->unit }}</td>
+              <td>{{ $stok->buruk }} {{ $stok->bahan->unit }}</td>
               <td>{{ $stok->stok }} {{ $stok->bahan->unit }}</td>
             </tr>
             @endforeach

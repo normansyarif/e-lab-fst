@@ -9,6 +9,23 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
+  <div class="row">
+    <div class="col-12">
+      @if($hasPosted)
+      <div class="alert alert-success">
+        <p>Anda telah melakukan rekapitulasi stok alat dan bahan bulan ini pada {{ $date }}</p>
+        <a class="btn btn-info" href="{{ url('uploads/rekap/' . $filename) }}">Lihat</a>
+        <a class="btn btn-info" href="{{ route('rekap') }}">Perbarui</a>
+      </div>
+      @else
+      <div class="alert alert-warning">
+        <p>Anda belum melakukan rekapitulasi stok alat dan bahan bulan ini</p>
+        <a class="btn btn-primary" href="{{ route('rekap') }}">Rekapitulasi</a>
+      </div>
+      @endif
+    </div>
+  </div>
+
   <!-- Content Row -->
   <div class="row">
 

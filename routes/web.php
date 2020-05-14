@@ -123,3 +123,9 @@ Route::get('/qr/data/alat/{id}', 'ItemController@showQRAlat')->name('qr.data.ala
 Route::get('/qr/data/bahan/{id}', 'ItemController@showQRBahan')->name('qr.data.bahan');
 Route::get('/qr/code/alat/{id}', 'ItemController@codeQRAlat')->name('qr.code.alat');
 Route::get('/qr/code/bahan/{id}', 'ItemController@codeQRBahan')->name('qr.code.bahan');
+
+// Rekap
+Route::get('/rekap', 'ItemController@rekap')->name('rekap');
+Route::get('/rekap/admin', 'ItemController@rekapAdmin')->name('rekap.admin');
+Route::get('/rekap/gudanglabor', 'ItemController@rekapGudangLabor')->name('rekap.gudanglabor');
+Route::post('/rekap/gudanglabor/{id}', 'ItemController@rekapDelete')->name('rekap.delete');

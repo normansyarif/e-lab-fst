@@ -16,12 +16,4 @@ class StokAlat extends Model
     	return $this->belongsTo('App\Lokasi', 'id_pemilik');
     }
 
-    public function kondisi_baik() {
-    	return $this->hasOne('App\StokAlatBaik', 'stok_id');
-    }
-
-    public function kondisi_buruk() {
-    	return $this->hasOne('App\StokAlatBuruk', 'stok_id');
-    }
-
 }

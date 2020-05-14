@@ -75,12 +75,20 @@
 			<li class="nav-item {{ Request::is('lab/kelola*') ? 'active' : '' }}">
 				<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
 					<i class="fas fa-fw fa-wrench"></i>
-					<span>Kelola Alat & Bahan</span>
+					<span>Kelola Alat & Bahan
+						@if($distSedang != 0)
+						<span class="badge badge-danger">{{ $distSedang }}</span>
+						@endif
+					</span>
 				</a>
 				<div id="collapseUtilities" class="collapse {{ Request::is('lab/kelola*') ? 'show' : '' }}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
 					<div class="bg-white py-2 collapse-inner rounded">
 						<h6 class="collapse-header">Kelola Alat & Bahan</h6>
-						<a class="collapse-item {{ Request::is('lab/kelola/item-masuk') ? 'active' : '' }}" href="{{ route('labor.kelola.item-masuk') }}">Alat & Bahan Masuk</a>
+						<a class="collapse-item {{ Request::is('lab/kelola/item-masuk') ? 'active' : '' }}" href="{{ route('labor.kelola.item-masuk') }}">Alat & Bahan Masuk
+							@if($distSedang != 0)
+							<span class="badge badge-danger">{{ $distSedang }}</span>
+							@endif
+						</a>
 						<a class="collapse-item {{ Request::is('lab/kelola/alat-keluar') ? 'active' : '' }}" href="{{ route('labor.kelola.alat-keluar') }}">Alat Keluar</a>
 						<a class="collapse-item {{ Request::is('lab/kelola/bahan-keluar') ? 'active' : '' }}" href="{{ route('labor.kelola.bahan-keluar') }}">Bahan Keluar</a>
 					</div>
@@ -99,7 +107,11 @@
 			<li class="nav-item {{ Request::is('lab/pengusulan') ? 'active' : '' }}">
 				<a class="nav-link" href="{{ route('labor.pengusulan') }}">
 					<i class="fas fa-fw fa-table"></i>
-					<span>Usulan</span>
+					<span>Usulan 
+						@if($usulanSedang != 0)
+						<span class="badge badge-danger">{{ $usulanSedang }}</span>
+						@endif
+					</span>
 				</a>
 			</li>
 
@@ -107,7 +119,27 @@
 			<li class="nav-item {{ Request::is('lab/pengajuan') ? 'active' : '' }}">
 				<a class="nav-link" href="{{ route('labor.pengajuan') }}">
 					<i class="fas fa-fw fa-table"></i>
-					<span>Permintaan</span>
+					<span>Permintaan 
+						@if($ajuanSedang != 0)
+						<span class="badge badge-danger">{{ $ajuanSedang }}</span>
+						@endif
+					</span>
+				</a>
+			</li>
+
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+
+			<!-- Heading -->
+			<div class="sidebar-heading">
+				Rekapitulasi
+			</div>
+
+			<!-- Nav Item - Pengajuan -->
+			<li class="nav-item {{ Request::is('rekap/gudanglabor') ? 'active' : '' }}">
+				<a class="nav-link" href="{{ route('rekap.gudanglabor') }}">
+					<i class="fas fa-fw fa-table"></i>
+					<span>Rekap Stok</span>
 				</a>
 			</li>
 

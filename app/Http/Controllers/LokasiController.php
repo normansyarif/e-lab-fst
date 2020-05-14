@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lokasi;
+use App\Pengajuan;
+use App\Distribusi;
 
 class LokasiController extends Controller
 {

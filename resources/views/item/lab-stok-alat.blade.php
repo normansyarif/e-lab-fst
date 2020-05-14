@@ -32,19 +32,8 @@
               <td>{{ $stok->alat->kode }}</td>
               <td>{{ $stok->alat->nama }}</td>
               <td>{{ $stok->alat->kategori->nama }}</td>
-              
-              @if(isset($stok->kondisi_baik->jumlah))
-              <td>{{ $stok->kondisi_baik->jumlah }}</td>
-              @else
-              <td>-</td>
-              @endif
-
-              @if(isset($stok->kondisi_buruk->jumlah))
-              <td>{{ $stok->kondisi_buruk->jumlah }}</td>
-              @else
-              <td>-</td>
-              @endif
-
+              <td>{{ $stok->baik }}</td>
+              <td>{{ $stok->buruk }}</td>
               <td>{{ $stok->stok }}</td>
             </tr>
             @endforeach

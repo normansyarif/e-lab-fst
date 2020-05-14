@@ -7,13 +7,17 @@ use App\Bahan;
 use App\StokBahan;
 use App\BahanMasuk;
 use App\Lokasi;
+use App\Pengajuan;
+use App\Distribusi;
 
 class BahanMasukController extends Controller
 {
     public function gudangBahanMasuk() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
     	$bahan = Bahan::all();
 		$bm = BahanMasuk::where('id_user', auth()->user()->in_charge->lokasi->id)->get();
-    	return view('item.gudang-kelola-bahan-masuk')->with('bahans', $bahan)->with('bms', $bm);
+    	return view('item.gudang-kelola-bahan-masuk')->with('bahans', $bahan)->with('bms', $bm)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function post(Request $req) {

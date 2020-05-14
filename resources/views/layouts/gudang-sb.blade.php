@@ -75,14 +75,22 @@
 			<li class="nav-item {{ Request::is('gudang/kelola*') ? 'active' : '' }}">
 				<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
 					<i class="fas fa-fw fa-wrench"></i>
-					<span>Kelola Alat & Bahan</span>
+					<span>Kelola Alat & Bahan
+						@if($distSedang != 0)
+						<span class="badge badge-danger">{{ $distSedang }}</span>
+						@endif
+					</span>
 				</a>
 				<div id="collapseUtilities" class="collapse {{ Request::is('gudang/kelola*') ? 'show' : '' }}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
 					<div class="bg-white py-2 collapse-inner rounded">
 						<h6 class="collapse-header">Kelola Alat & Bahan</h6>
 						<a class="collapse-item {{ Request::is('gudang/kelola/alat-masuk') ? 'active' : '' }}" href="{{ route('gudang.kelola.alat-masuk') }}">Alat Masuk</a>
 						<a class="collapse-item {{ Request::is('gudang/kelola/bahan-masuk') ? 'active' : '' }}" href="{{ route('gudang.kelola.bahan-masuk') }}">Bahan Masuk</a>
-						<a class="collapse-item {{ Request::is('gudang/kelola/distribusi*') ? 'active' : '' }}" href="{{ route('gudang.kelola.distribusi') }}">Distribusi Alat & Bahan</a>
+						<a class="collapse-item {{ Request::is('gudang/kelola/distribusi*') ? 'active' : '' }}" href="{{ route('gudang.kelola.distribusi') }}">Distribusi Alat & Bahan
+							@if($distSedang != 0)
+							<span class="badge badge-danger">{{ $distSedang }}</span>
+							@endif
+						</a>
 					</div>
 				</div>
 			</li>
@@ -107,9 +115,31 @@
 			<li class="nav-item {{ Request::is('gudang/permintaan') ? 'active' : '' }}">
 				<a class="nav-link" href="{{ route('gudang.permintaan') }}">
 					<i class="fas fa-fw fa-table"></i>
-					<span>Permintaan dari Lab</span>
+					<span>Permintaan dari Lab
+						@if($ajuanSedang != 0)
+						<span class="badge badge-danger">{{ $ajuanSedang }}</span>
+						@endif
+					</span>
+
 				</a>
 			</li>
+
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+
+			<!-- Heading -->
+			<div class="sidebar-heading">
+				Rekapitulasi
+			</div>
+
+			<!-- Nav Item - Pengajuan -->
+			<li class="nav-item {{ Request::is('rekap/gudanglabor') ? 'active' : '' }}">
+				<a class="nav-link" href="{{ route('rekap.gudanglabor') }}">
+					<i class="fas fa-fw fa-table"></i>
+					<span>Rekap Stok</span>
+				</a>
+			</li>
+
 
 			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block">

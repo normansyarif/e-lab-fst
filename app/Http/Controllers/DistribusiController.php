@@ -13,19 +13,24 @@ use App\StokAlat;
 use App\StokBahan;
 use PDF;
 use App\Lokasi;
+use App\Pengajuan;
 
 class DistribusiController extends Controller
 {
 	public function gudangDistribusi() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
 		$distribusi = Distribusi::all();
-    	return view('item.gudang-kelola-distribusi')->with('distribusis', $distribusi);
+    	return view('item.gudang-kelola-distribusi')->with('distribusis', $distribusi)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function gudangBuatDistribusi() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
     	$alat = Alat::all();
     	$bahan = Bahan::all();
     	$labs = Lokasi::where('tipe', 2)->get();
-    	return view('item.gudang-kelola-buat-distribusi')->with('labs', $labs)->with('alats', $alat)->with('bahans', $bahan);
+    	return view('item.gudang-kelola-buat-distribusi')->with('labs', $labs)->with('alats', $alat)->with('bahans', $bahan)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function post(Request $req) {
@@ -75,7 +80,9 @@ class DistribusiController extends Controller
     }
 
     public function formUpload($id) {
-        return view('item.gudang-form-upload-distribusi')->with('id', $id);
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
+        return view('item.gudang-form-upload-distribusi')->with('id', $id)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function postUpload(Request $request, $id) {
@@ -198,7 +205,10 @@ class DistribusiController extends Controller
     }
 
     public function laborItemMasuk() {
+        $usulanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_pengaju', auth()->user()->in_charge->lokasi->id)->count();
+        $ajuanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_tujuan', auth()->user()->in_charge->lokasi->id)->count();
         $distribusi = Distribusi::where('id_tujuan', auth()->user()->in_charge->lokasi->id)->get();
-        return view('item.lab-kelola-item-masuk')->with('distribusis', $distribusi);
+        return view('item.lab-kelola-item-masuk')->with('distribusis', $distribusi)->with('usulanSedang', $usulanSedang)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 }

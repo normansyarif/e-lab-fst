@@ -7,13 +7,17 @@ use App\AlatMasuk;
 use App\Alat;
 use App\StokAlat;
 use App\Lokasi;
+use App\Pengajuan;
+use App\Distribusi;
 
 class AlatMasukController extends Controller
 {
 	public function gudangAlatMasuk() {
 		$alat = Alat::all();
 		$am = AlatMasuk::where('id_user', auth()->user()->in_charge->lokasi->id)->get();
-    	return view('item.gudang-kelola-alat-masuk')->with('alats', $alat)->with('ams', $am);
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
+    	return view('item.gudang-kelola-alat-masuk')->with('alats', $alat)->with('ams', $am)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function post(Request $req) {

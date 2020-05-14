@@ -13,40 +13,56 @@ use App\StokBahan;
 use App\User;
 use PDF;
 use App\Lokasi;
+use App\Distribusi;
 
 class PengajuanController extends Controller
 {
 	public function gudangPengajuan() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
         $p = Pengajuan::where('id_pengaju', auth()->user()->in_charge->lokasi->id)->where('id_teraju', 0)->get();
-        return view('aju_usul.gudang-pengajuan')->with('ajuans', $p);
+        return view('aju_usul.gudang-pengajuan')->with('ajuans', $p)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function gudangPermintaan() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
         $p = Pengajuan::where('id_teraju', '!=', 0)->get();
-        return view('aju_usul.gudang-permintaan')->with('ajuans', $p);
+        return view('aju_usul.gudang-permintaan')->with('ajuans', $p)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function laborPengajuan() {
+        $usulanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_pengaju', auth()->user()->in_charge->lokasi->id)->count();
+        $ajuanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_tujuan', auth()->user()->in_charge->lokasi->id)->count();
         $p = Pengajuan::where('id_teraju', auth()->user()->in_charge->lokasi->id)->whereIn('status', [3, 4, 5, 6])->get();
-        return view('aju_usul.lab-pengajuan')->with('ajuans', $p);
+        return view('aju_usul.lab-pengajuan')->with('ajuans', $p)->with('usulanSedang', $usulanSedang)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function gudangBuatPengajuan() {
+        $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
         $alat = Alat::all();
         $bahan = Bahan::all();
-        return view('item.gudang-kelola-buat-pengajuan')->with('alats', $alat)->with('bahans', $bahan);
+        return view('item.gudang-kelola-buat-pengajuan')->with('alats', $alat)->with('bahans', $bahan)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function laborPengusulan() {
+        $usulanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_pengaju', auth()->user()->in_charge->lokasi->id)->count();
+        $ajuanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_tujuan', auth()->user()->in_charge->lokasi->id)->count();
         $p = Pengajuan::where('id_pengaju', auth()->user()->in_charge->lokasi->id)->get();
-        return view('aju_usul.lab-pengusulan')->with('ajuans', $p);
+        return view('aju_usul.lab-pengusulan')->with('ajuans', $p)->with('usulanSedang', $usulanSedang)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function laborBuatPengusulan() {
+        $usulanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_pengaju', auth()->user()->in_charge->lokasi->id)->count();
+        $ajuanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+        $distSedang = Distribusi::where('status', 1)->where('id_tujuan', auth()->user()->in_charge->lokasi->id)->count();
         $alat = Alat::all();
         $bahan = Bahan::all();
         $gudangs = Lokasi::where('tipe', 1)->get();
-        return view('item.lab-kelola-buat-pengusulan')->with('alats', $alat)->with('bahans', $bahan)->with('gudangs', $gudangs);
+        return view('item.lab-kelola-buat-pengusulan')->with('alats', $alat)->with('bahans', $bahan)->with('gudangs', $gudangs)->with('usulanSedang', $usulanSedang)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
     }
 
     public function postKeDekanat(Request $req) {
@@ -148,7 +164,9 @@ public function printSurat($id) {
 }
 
 public function formUpload($id) {
-    return view('item.gudang-form-upload-pengajuan')->with('id', $id);
+    $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+    $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
+    return view('item.gudang-form-upload-pengajuan')->with('id', $id)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
 }
 
 public function postUpload(Request $request, $id) {
@@ -278,21 +296,26 @@ public function postUpload(Request $request, $id) {
 }
 
 public function cekStok($id) {
+    $ajuanSedang = Pengajuan::whereIn('status', [1, 2])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+    $distSedang = Distribusi::where('status', 1)->where('id_asal', auth()->user()->in_charge->lokasi->id)->count();
     $pengajuan = Pengajuan::find($id);
     $alat = Alat::all();
     $bahan = Bahan::all();
     $pAlat = PengajuanAlat::where('id_pengajuan', $id)->get();
     $pBahan = PengajuanBahan::where('id_pengajuan', $id)->get();
-    return view('item.gudang-kelola-cek-stok')->with('pengajuan', $pengajuan)->with('alats', $alat)->with('bahans', $bahan)->with('pAlats', $pAlat)->with('pBahans', $pBahan);
+    return view('item.gudang-kelola-cek-stok')->with('pengajuan', $pengajuan)->with('alats', $alat)->with('bahans', $bahan)->with('pAlats', $pAlat)->with('pBahans', $pBahan)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
 }
 
 public function cekStokLabor($id) {
+    $usulanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_pengaju', auth()->user()->in_charge->lokasi->id)->count();
+    $ajuanSedang = Pengajuan::whereIn('status', [1,2,3,4])->where('id_teraju', auth()->user()->in_charge->lokasi->id)->count();
+    $distSedang = Distribusi::where('status', 1)->where('id_tujuan', auth()->user()->in_charge->lokasi->id)->count();
     $pengajuan = Pengajuan::find($id);
     $alat = Alat::all();
     $bahan = Bahan::all();
     $pAlat = PengajuanAlat::where('id_pengajuan', $id)->get();
     $pBahan = PengajuanBahan::where('id_pengajuan', $id)->get();
-    return view('item.lab-kelola-cek-stok')->with('pengajuan', $pengajuan)->with('alats', $alat)->with('bahans', $bahan)->with('pAlats', $pAlat)->with('pBahans', $pBahan);
+    return view('item.lab-kelola-cek-stok')->with('pengajuan', $pengajuan)->with('alats', $alat)->with('bahans', $bahan)->with('pAlats', $pAlat)->with('pBahans', $pBahan)->with('usulanSedang', $usulanSedang)->with('ajuanSedang', $ajuanSedang)->with('distSedang', $distSedang);
 }
 
 public function gudangPengajuanProcess(Request $req) {

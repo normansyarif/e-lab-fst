@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Lokasi;
 use App\Role;
+use App\Pengajuan;
+use App\Distribusi;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
